@@ -1,0 +1,1013 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Cocina de Anita</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+            color: white;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            min-height: 100vh;
+            position: relative;
+            background: #1a1a1a;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+
+        /* Pantalla de presentación */
+        .welcome-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            text-align: center;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+        }
+
+        .logo {
+            width: 200px;
+            height: 200px;
+            margin-bottom: 30px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .welcome-title {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .welcome-subtitle {
+            font-size: 1.2rem;
+            color: #b8b8b8;
+            margin-bottom: 40px;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #2a5f2a, #1e4d1e);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            margin: 10px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 200px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+            background: linear-gradient(45deg, #2d652d, #214d21);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(45deg, #4a4a4a, #333333);
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(45deg, #555555, #404040);
+        }
+
+        .social-links {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+        }
+
+        .social-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .instagram-btn {
+            background: linear-gradient(45deg, #8b4513, #a0522d);
+        }
+
+        .whatsapp-btn {
+            background: #2d5a2d;
+        }
+
+        .social-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        /* Pantalla del menú */
+        .menu-screen {
+            display: none;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .menu-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(45deg, rgba(196,30,58,0.1), rgba(34,139,34,0.1));
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .menu-title {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .menu-subtitle {
+            color: #b8b8b8;
+            font-size: 1.1rem;
+        }
+
+        .step-container {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .step-title {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: #228b22;
+        }
+
+        .option-btn {
+            width: 100%;
+            padding: 15px;
+            margin: 8px 0;
+            border: 2px solid transparent;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.08);
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .option-btn:hover {
+            background: rgba(255,255,255,0.12);
+            transform: translateX(5px);
+            border-color: rgba(34,139,34,0.5);
+        }
+
+        .option-btn.selected {
+            border-color: #228b22;
+            background: rgba(34,139,34,0.2);
+        }
+
+        .step-hidden {
+            display: none;
+        }
+
+        .extras-container {
+            display: flex;
+            gap: 15px;
+        }
+
+        .extra-option {
+            flex: 1;
+        }
+
+        .toggle-btn {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #555;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.08);
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-btn.active {
+            border-color: #228b22;
+            background: rgba(34,139,34,0.2);
+        }
+
+        .order-summary {
+            background: linear-gradient(45deg, rgba(196,30,58,0.08), rgba(34,139,34,0.08));
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .summary-title {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: #c41e3a;
+        }
+
+        .summary-item {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .navigation-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn-back {
+            background: linear-gradient(45deg, #666, #888);
+            flex: 1;
+        }
+
+        .btn-next {
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            flex: 2;
+        }
+
+        .btn-order {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            width: 100%;
+        }
+
+        .payment-info {
+            background: rgba(255,255,255,0.05);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .payment-title {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: #4ecdc4;
+        }
+
+        .payment-methods {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .payment-method {
+            text-align: center;
+            color: #ccc;
+        }
+
+        .payment-method strong {
+            display: block;
+            margin-bottom: 5px;
+            color: white;
+        }
+
+        .text-input {
+            width: 100%;
+            padding: 15px;
+            margin: 8px 0;
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            background: rgba(255,255,255,0.08);
+            color: white;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .text-input:focus {
+            outline: none;
+            border-color: #228b22;
+            background: rgba(255,255,255,0.12);
+        }
+
+        .text-input::placeholder {
+            color: #b8b8b8;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #228b22;
+            font-weight: bold;
+        }
+
+        .price-display {
+            text-align: center;
+            padding: 15px;
+            margin: 15px 0;
+            background: rgba(34,139,34,0.1);
+            border-radius: 8px;
+            border: 2px solid rgba(34,139,34,0.3);
+        }
+
+        .total-price {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(45deg, rgba(196,30,58,0.15), rgba(34,139,34,0.15));
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .order-item {
+            background: rgba(255,255,255,0.03);
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #228b22;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .order-item h4 {
+            color: #c41e3a;
+            margin-bottom: 10px;
+        }
+
+        .privacy-note {
+            background: rgba(78,205,196,0.05);
+            border: 1px solid rgba(78,205,196,0.2);
+            border-radius: 8px;
+            padding: 10px;
+            margin: 15px 0;
+        }
+
+        .form-group small {
+            display: block;
+            margin-top: 5px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .extras-note {
+            background: rgba(78,205,196,0.05);
+            border: 1px solid rgba(78,205,196,0.3);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            text-align: center;
+        }
+
+        .extras-note p {
+            color: #4ecdc4;
+            font-size: 0.95rem;
+            margin-bottom: 10px;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .container {
+                max-width: 100%;
+            }
+            
+            .welcome-title {
+                font-size: 2rem;
+            }
+            
+            .logo {
+                width: 150px;
+                height: 150px;
+            }
+            
+            .btn {
+                min-width: 180px;
+                padding: 12px 25px;
+            }
+
+            .text-input {
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Pantalla de Bienvenida -->
+        <div id="welcomeScreen" class="welcome-screen">
+            <img src="./pictures/La Cocina de Anita Logo Cosido 1 (Sin fondo).png" 
+                 class="logo" 
+                 alt="La Cocina de Anita Logo">
+            
+            <h1 class="welcome-title">La Cocina de Anita</h1>
+            <p class="welcome-subtitle">Comida casera con amor</p>
+            
+            <button class="btn" onclick="openMenu()">🍽️ Ver Menú de la Semana</button>
+            <button class="btn btn-secondary" onclick="closeApp()">❌ Cerrar</button>
+            
+            <div class="social-links">
+                <button class="social-btn instagram-btn" onclick="openInstagram()">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
+                        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                    </svg>
+                </button>
+                <button class="social-btn whatsapp-btn" onclick="openWhatsApp()">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
+                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.531 3.488"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Pantalla del Menú -->
+        <div id="menuScreen" class="menu-screen">
+            <div class="menu-header">
+                <img src="./pictures/La Cocina de Anita Logo Cosido 1 (Sin fondo).png" 
+                     style="width: 80px; height: 80px; margin: 0 auto 15px; display: block;"
+                     alt="La Cocina de Anita Logo">
+                <h2 class="menu-title" style="color: white;">Arma tu Comida</h2>
+                <p class="menu-subtitle">Selecciona tus opciones paso a paso</p>
+            </div>
+
+            <!-- Paso 1: Tipo de Plato -->
+            <div id="step1" class="step-container">
+                <h3 class="step-title">Paso 1: Elige tu Plato Principal</h3>
+                <button class="option-btn" onclick="selectDish('milanesa-pollo')">🐔 Milanesa de Pollo</button>
+                <button class="option-btn" onclick="selectDish('milanesa-carne')">🥩 Milanesa de Carne</button>
+                <button class="option-btn" onclick="selectDish('pabellon')" style="background: linear-gradient(45deg, rgba(255,193,7,0.1), rgba(220,53,69,0.1)); border: 1px solid rgba(255,193,7,0.3);">
+                    🇻🇪 Pabellón Criollo Venezolano
+                    <div style="font-size: 0.8rem; color: #ccc; margin-top: 5px;">
+                        Arroz, carne mechada, caraotas negras y tajadas
+                    </div>
+                </button>
+            </div>
+
+            <!-- Paso 2: Acompañamiento -->
+            <div id="step2" class="step-container step-hidden">
+                <h3 class="step-title">Paso 2: Elige tu Acompañamiento</h3>
+                <button class="option-btn" onclick="selectSide('pure')">🥔 Puré de Papa</button>
+                <button class="option-btn" onclick="selectSide('arroz')">🍚 Arroz</button>
+            </div>
+
+            <!-- Paso 3: Extras (siempre visible después del paso 2) -->
+            <div id="step3" class="step-container step-hidden">
+                <h3 class="step-title">Paso 3: Personaliza tu Plato (Opcional)</h3>
+                <div class="extras-note">
+                    <p>💡 Por defecto incluimos ensalada rallada y tajada</p>
+                    <p>Puedes quitarlas si no las quieres tocando los botones</p>
+                </div>
+                <div class="extras-container">
+                    <div class="extra-option">
+                        <button class="toggle-btn active" id="ensaladaBtn" onclick="toggleExtra('ensalada')">
+                            🥗 Ensalada Rallada
+                        </button>
+                    </div>
+                    <div class="extra-option">
+                        <button class="toggle-btn active" id="tajadaBtn" onclick="toggleExtra('tajada')">
+                            🍌 Tajada
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Paso 4: Para quién es el pedido -->
+            <div id="step4" class="step-container step-hidden">
+                <h3 class="step-title">Paso 4: ¿Para quién es este pedido?</h3>
+                <input type="text" id="forWhoInput" class="text-input" placeholder="Ej: Para María, Para Juan, Para mí..." maxlength="50">
+                <button class="btn" style="width: 100%; margin-top: 15px;" onclick="setOrderRecipient()">✅ Confirmar</button>
+            </div>
+
+            <!-- Resumen del Pedido -->
+            <div id="orderSummary" class="order-summary step-hidden">
+                <h3 class="summary-title">📋 Resumen de tu Pedido</h3>
+                <div id="summaryContent"></div>
+                <div class="price-display">
+                    <strong style="font-size: 1.3rem; color: #4ecdc4;">💰 Precio: $5.00</strong>
+                </div>
+                <div style="margin-top: 20px;">
+                    <button class="btn" style="background: linear-gradient(45deg, #1f4d1f, #2a5f2a); margin: 5px;" onclick="addAnotherOrder()">➕ Agregar Otro Pedido</button>
+                    <button class="btn btn-order" onclick="proceedToCheckout()">🛒 Continuar con el Pedido</button>
+                </div>
+            </div>
+
+            <!-- Resumen de Todos los Pedidos -->
+            <div id="allOrdersSummary" class="step-container step-hidden">
+                <h3 class="step-title">🛒 Todos tus Pedidos</h3>
+                <div id="allOrdersContent"></div>
+                <div class="total-price">
+                    <h3 style="color: #ff6b6b; margin-top: 20px;">💰 Total: $<span id="totalPrice">5.00</span></h3>
+                </div>
+                <div style="margin-top: 20px;">
+                    <button class="btn" style="background: linear-gradient(45deg, #1f4d1f, #2a5f2a); margin: 5px;" onclick="addAnotherOrder()">➕ Agregar Otro Pedido</button>
+                    <button class="btn btn-order" onclick="showCustomerForm()">📋 Finalizar y Enviar Pedido</button>
+                </div>
+            </div>
+
+            <!-- Formulario de Datos del Cliente -->
+            <div id="customerForm" class="step-container step-hidden">
+                <h3 class="step-title">📝 Información de Contacto</h3>
+                <p style="color: #ccc; margin-bottom: 20px; text-align: center;">
+                    Para procesar tu pedido necesitamos algunos datos básicos
+                </p>
+                
+                <div class="form-group">
+                    <label for="customerName">👤 ¿Cómo te llamas?</label>
+                    <input type="text" id="customerName" class="text-input" placeholder="Ej: María González" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="customerPhone">📱 Tu número de teléfono:</label>
+                    <input type="tel" id="customerPhone" class="text-input" placeholder="Ej: 6825-7958" required>
+                    <small style="color: #999; font-size: 0.9rem;">Para coordinar la entrega</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="customerAddress">📍 ¿Dónde te entregamos?</label>
+                    <textarea id="customerAddress" class="text-input" placeholder="Ej: Calle 50, Edificio Torres del Mar, Apto 5B, San Francisco" rows="3" required></textarea>
+                    <small style="color: #999; font-size: 0.9rem;">Incluye referencias para encontrarte fácil</small>
+                </div>
+                
+                <div class="privacy-note">
+                    <p style="font-size: 0.85rem; color: #888; text-align: center; margin: 15px 0;">
+                        🔒 Tus datos solo se usan para este pedido y no se guardan
+                    </p>
+                </div>
+                
+                <button class="btn btn-order" onclick="sendFinalOrder()">📱 Enviar Pedido por WhatsApp</button>
+            </div>
+
+            <!-- Información de Pago -->
+            <div class="payment-info">
+                <h3 class="payment-title">💳 Medios de Pago</h3>
+                <div class="payment-methods">
+                    <div class="payment-method">
+                        <strong>Efectivo</strong>
+                        <span>💵</span>
+                    </div>
+                    <div class="payment-method">
+                        <strong>Transferencia</strong>
+                        <div>Banco General</div>
+                        <div>Cta. Ahorro</div>
+                        <div>04-20-99488149-0</div>
+                    </div>
+                    <div class="payment-method">
+                        <strong>Yappy</strong>
+                        <span>6825-7958</span>
+                    </div>
+                </div>
+                
+                <!-- Contacto Footer -->
+                <div style="margin-top: 25px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);">
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap;">
+                        <div style="display: flex; align-items: center; gap: 8px; color: #b8b8b8;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="#b8b8b8">
+                                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                            </svg>
+                            <span>@lacocinadeanita507</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px; color: #b8b8b8;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="#b8b8b8">
+                                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.531 3.488"/>
+                            </svg>
+                            <span>6825-7958</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botones de Navegación -->
+            <div class="navigation-buttons">
+                <button class="btn btn-back" onclick="goBack()">⬅️ Volver al Inicio</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentOrder = {
+            dishType: '', // 'milanesa-pollo', 'milanesa-carne', 'pabellon'
+            protein: '', // solo para milanesas  
+            side: '', // solo para milanesas
+            ensalada: true,
+            tajada: true,
+            forWho: ''
+        };
+        
+        let allOrders = [];
+        let customerData = {
+            name: '',
+            phone: '',
+            address: ''
+        };
+        
+        let currentStep = 1;
+
+        function openMenu() {
+            document.getElementById('welcomeScreen').classList.add('hidden');
+            document.getElementById('menuScreen').style.display = 'block';
+        }
+
+        function closeApp() {
+            if (confirm('¿Estás seguro de que quieres cerrar la aplicación?')) {
+                window.close();
+            }
+        }
+
+        function openInstagram() {
+            window.open('https://www.instagram.com/lacocinadeanita507/', '_blank');
+        }
+
+        function openWhatsApp() {
+            window.open('https://wa.me/50768257958', '_blank');
+        }
+
+        function selectDish(dishType) {
+            currentOrder.dishType = dishType;
+            
+            // Marcar opción seleccionada
+            document.querySelectorAll('#step1 .option-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            event.target.classList.add('selected');
+            
+            if (dishType === 'pabellon') {
+                // Para pabellón, saltar al paso 4 directamente (sin extras)
+                currentOrder.protein = 'carne-mechada';
+                currentOrder.side = 'arroz-caraotas';
+                currentOrder.ensalada = false; // Pabellón no lleva ensalada
+                currentOrder.tajada = true; // Ya viene incluida
+                
+                setTimeout(() => {
+                    document.getElementById('step4').classList.remove('step-hidden');
+                    document.querySelector('#step4 .step-title').textContent = 'Paso 2: ¿Para quién es este pedido?';
+                    document.getElementById('step4').scrollIntoView({ behavior: 'smooth' });
+                }, 300);
+            } else {
+                // Para milanesas, mostrar paso 2 (acompañamiento)
+                currentOrder.protein = dishType === 'milanesa-pollo' ? 'pollo' : 'carne';
+                
+                setTimeout(() => {
+                    document.getElementById('step2').classList.remove('step-hidden');
+                    document.getElementById('step2').scrollIntoView({ behavior: 'smooth' });
+                }, 300);
+            }
+        }
+
+        function selectSide(side) {
+            currentOrder.side = side;
+            
+            // Marcar opción seleccionada
+            document.querySelectorAll('#step2 .option-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            event.target.classList.add('selected');
+            
+            // Mostrar pasos 3 y 4 automáticamente
+            setTimeout(() => {
+                document.getElementById('step3').classList.remove('step-hidden');
+                document.getElementById('step4').classList.remove('step-hidden');
+                document.getElementById('step3').scrollIntoView({ behavior: 'smooth' });
+            }, 300);
+        }
+
+        function toggleExtra(extra) {
+            currentOrder[extra] = !currentOrder[extra];
+            
+            const btn = document.getElementById(extra + 'Btn');
+            if (currentOrder[extra]) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        }
+
+        function setOrderRecipient() {
+            const forWho = document.getElementById('forWhoInput').value.trim();
+            if (!forWho) {
+                alert('Por favor, indica para quién es este pedido');
+                return;
+            }
+            
+            currentOrder.forWho = forWho;
+            showOrderSummary();
+        }
+
+        function showOrderSummary() {
+            document.getElementById('orderSummary').classList.remove('step-hidden');
+            updateOrderSummary();
+            setTimeout(() => {
+                document.getElementById('orderSummary').scrollIntoView({ behavior: 'smooth' });
+            }, 300);
+        }
+
+        function updateOrderSummary() {
+            let proteinText = '';
+            let sideText = '';
+            let priceText = '$5.00';
+            
+            if (currentOrder.dishType === 'pabellon') {
+                proteinText = 'Pabellón Criollo Venezolano';
+                sideText = 'Arroz blanco, carne mechada, caraotas negras y tajadas de plátano';
+                priceText = '$5.00'; // Cambiado a $5.00
+            } else {
+                proteinText = currentOrder.protein === 'pollo' ? 'Milanesa de Pollo' : 'Milanesa de Carne';
+                sideText = currentOrder.side === 'pure' ? 'Puré de Papa' : 'Arroz';
+            }
+            
+            let summaryHTML = `
+                <div class="summary-item">
+                    <strong>👤 Para:</strong> ${currentOrder.forWho}
+                </div>
+                <div class="summary-item">
+                    <strong>🍽️ Plato:</strong> ${proteinText}
+                </div>
+            `;
+            
+            if (currentOrder.dishType !== 'pabellon') {
+                summaryHTML += `
+                    <div class="summary-item">
+                        <strong>🍽️ Acompañamiento:</strong> ${sideText}
+                    </div>
+                    <div class="summary-item">
+                        <strong>🥗 Ensalada Rallada:</strong> ${currentOrder.ensalada ? '✅ Incluida' : '❌ Sin ensalada'}
+                    </div>
+                    <div class="summary-item">
+                        <strong>🍌 Tajada:</strong> ${currentOrder.tajada ? '✅ Incluida' : '❌ Sin tajada'}
+                    </div>
+                `;
+            } else {
+                summaryHTML += `
+                    <div class="summary-item">
+                        <strong>🍽️ Incluye:</strong> ${sideText}
+                    </div>
+                `;
+            }
+            
+            document.getElementById('summaryContent').innerHTML = summaryHTML;
+            
+            // Actualizar precio en el resumen
+            document.querySelector('.price-display strong').innerHTML = `💰 Precio: ${priceText}`;
+        }
+
+        function addAnotherOrder() {
+            // Guardar pedido actual
+            allOrders.push({...currentOrder});
+            
+            // Reset para nuevo pedido
+            currentOrder = {
+                dishType: '',
+                protein: '',
+                side: '',
+                ensalada: true,
+                tajada: true,
+                forWho: ''
+            };
+            
+            // Ocultar resúmenes
+            document.getElementById('orderSummary').classList.add('step-hidden');
+            document.getElementById('allOrdersSummary').classList.add('step-hidden');
+            
+            // Reset pasos
+            resetSteps();
+            
+            // Volver al paso 1
+            document.getElementById('step1').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function proceedToCheckout() {
+            // Guardar pedido actual
+            allOrders.push({...currentOrder});
+            
+            // Mostrar todos los pedidos
+            showAllOrdersSummary();
+        }
+
+        function showAllOrdersSummary() {
+            document.getElementById('orderSummary').classList.add('step-hidden');
+            document.getElementById('allOrdersSummary').classList.remove('step-hidden');
+            
+            let allOrdersHTML = '';
+            let total = 0;
+            
+            allOrders.forEach((order, index) => {
+                let orderPrice = 5.00; // Todos los platos cuestan $5.00
+                let dishDescription = '';
+                
+                if (order.dishType === 'pabellon') {
+                    dishDescription = `
+                        <p><strong>🇻🇪</strong> Pabellón Criollo Venezolano</p>
+                        <p><strong>🍽️</strong> Arroz, carne mechada, caraotas y tajadas</p>
+                    `;
+                } else {
+                    const proteinText = order.protein === 'pollo' ? 'Milanesa de Pollo' : 'Milanesa de Carne';
+                    const sideText = order.side === 'pure' ? 'Puré de Papa' : 'Arroz';
+                    
+                    dishDescription = `
+                        <p><strong>🍖</strong> ${proteinText}</p>
+                        <p><strong>🍽️</strong> ${sideText}</p>
+                        <p><strong>🥗</strong> ${order.ensalada ? 'Con ensalada' : 'Sin ensalada'}</p>
+                        <p><strong>🍌</strong> ${order.tajada ? 'Con tajada' : 'Sin tajada'}</p>
+                    `;
+                }
+                
+                total += orderPrice;
+                
+                allOrdersHTML += `
+                    <div class="order-item">
+                        <h4>Pedido ${index + 1} - ${order.forWho}</h4>
+                        ${dishDescription}
+                        <p><strong>💰</strong> ${orderPrice.toFixed(2)}</p>
+                    </div>
+                `;
+            });
+            
+            document.getElementById('allOrdersContent').innerHTML = allOrdersHTML;
+            document.getElementById('totalPrice').textContent = total.toFixed(2);
+            
+            setTimeout(() => {
+                document.getElementById('allOrdersSummary').scrollIntoView({ behavior: 'smooth' });
+            }, 300);
+        }
+
+        function showCustomerForm() {
+            document.getElementById('allOrdersSummary').classList.add('step-hidden');
+            document.getElementById('customerForm').classList.remove('step-hidden');
+            
+            setTimeout(() => {
+                document.getElementById('customerForm').scrollIntoView({ behavior: 'smooth' });
+            }, 300);
+        }
+
+        function sendFinalOrder() {
+            // Validar datos del cliente
+            const name = document.getElementById('customerName').value.trim();
+            const phone = document.getElementById('customerPhone').value.trim();
+            const address = document.getElementById('customerAddress').value.trim();
+            
+            if (!name || !phone || !address) {
+                alert('Por favor, completa todos los datos requeridos');
+                return;
+            }
+            
+            customerData = { name, phone, address };
+            
+            // Crear mensaje para WhatsApp
+            let message = `🍽️ *PEDIDO - LA COCINA DE ANITA*\n\n`;
+            message += `👤 *DATOS DEL CLIENTE:*\n`;
+            message += `• Nombre: ${customerData.name}\n`;
+            message += `• Teléfono: ${customerData.phone}\n`;
+            message += `• Dirección: ${customerData.address}\n\n`;
+            
+            message += `📋 *DETALLES DEL PEDIDO:*\n`;
+            
+            let total = 0;
+            
+            allOrders.forEach((order, index) => {
+                let orderPrice = 5.00; // Todos los platos cuestan $5.00
+                
+                message += `\n*Pedido ${index + 1} - ${order.forWho}:*\n`;
+                
+                if (order.dishType === 'pabellon') {
+                    message += `🇻🇪 Pabellón Criollo Venezolano\n`;
+                    message += `🍽️ Arroz blanco, carne mechada, caraotas negras y tajadas\n`;
+                } else {
+                    const proteinText = order.protein === 'pollo' ? 'Milanesa de Pollo' : 'Milanesa de Carne';
+                    const sideText = order.side === 'pure' ? 'Puré de Papa' : 'Arroz';
+                    const ensaladaText = order.ensalada ? 'con ensalada' : 'sin ensalada';
+                    const tajadaText = order.tajada ? 'con tajada' : 'sin tajada';
+                    
+                    message += `🍖 ${proteinText}\n`;
+                    message += `🍽️ ${sideText}\n`;
+                    message += `🥗 ${ensaladaText}\n`;
+                    message += `🍌 ${tajadaText}\n`;
+                }
+                
+                message += `💰 ${orderPrice.toFixed(2)}\n`;
+                total += orderPrice;
+            });
+            
+            message += `\n💰 *TOTAL: ${total.toFixed(2)}*\n\n`;
+            message += `¡Hola! Este es mi pedido completo. ¿Podrías confirmar la disponibilidad y tiempo de entrega?\n\n`;
+            message += `Gracias! 😊`;
+            
+            const encodedMessage = encodeURIComponent(message);
+            window.open(`https://wa.me/50768257958?text=${encodedMessage}`, '_blank');
+        }
+
+        function resetSteps() {
+            // Ocultar todos los pasos excepto el 1
+            document.getElementById('step2').classList.add('step-hidden');
+            document.getElementById('step3').classList.add('step-hidden');
+            document.getElementById('step4').classList.add('step-hidden');
+            document.getElementById('customerForm').classList.add('step-hidden');
+            
+            // Restaurar textos originales
+            document.querySelector('#step3 .step-title').textContent = 'Paso 3: Personaliza tu Plato (Opcional)';
+            document.querySelector('#step3 .extras-note p:first-child').textContent = '💡 Por defecto incluimos ensalada rallada y tajada';
+            document.querySelector('#step3 .extras-note p:last-child').textContent = 'Puedes quitarlas si no las quieres tocando los botones';
+            document.querySelector('#step4 .step-title').textContent = 'Paso 4: ¿Para quién es este pedido?';
+            
+            // Mostrar botón de tajada
+            document.getElementById('tajadaBtn').style.display = 'block';
+            document.getElementById('ensaladaBtn').style.width = '';
+            
+            // Limpiar selecciones
+            document.querySelectorAll('.option-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            
+            // Reset botones de extras
+            document.getElementById('ensaladaBtn').classList.add('active');
+            document.getElementById('tajadaBtn').classList.add('active');
+            
+            // Limpiar input
+            document.getElementById('forWhoInput').value = '';
+        }
+
+        function goBack() {
+            // Resetear todo
+            currentOrder = {
+                dishType: '',
+                protein: '',
+                side: '',
+                ensalada: true,
+                tajada: true,
+                forWho: ''
+            };
+            allOrders = [];
+            customerData = { name: '', phone: '', address: '' };
+            
+            // Limpiar formularios
+            document.getElementById('customerName').value = '';
+            document.getElementById('customerPhone').value = '';
+            document.getElementById('customerAddress').value = '';
+            
+            // Ocultar todas las secciones del menú
+            document.getElementById('step2').classList.add('step-hidden');
+            document.getElementById('step3').classList.add('step-hidden');
+            document.getElementById('step4').classList.add('step-hidden');
+            document.getElementById('orderSummary').classList.add('step-hidden');
+            document.getElementById('allOrdersSummary').classList.add('step-hidden');
+            document.getElementById('customerForm').classList.add('step-hidden');
+            
+            // Limpiar selecciones
+            document.querySelectorAll('.option-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            
+            // Reset botones de extras
+            document.getElementById('ensaladaBtn').classList.add('active');
+            document.getElementById('tajadaBtn').classList.add('active');
+            
+            // Limpiar input
+            document.getElementById('forWhoInput').value = '';
+            
+            // Volver al inicio
+            document.getElementById('menuScreen').style.display = 'none';
+            document.getElementById('welcomeScreen').classList.remove('hidden');
+        }
+
+        // Animación inicial
+        window.addEventListener('load', () => {
+            document.body.style.opacity = '0';
+            setTimeout(() => {
+                document.body.style.transition = 'opacity 0.5s ease';
+                document.body.style.opacity = '1';
+            }, 100);
+        });
+    </script>
+</body>
+</html>
