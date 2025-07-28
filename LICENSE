@@ -1,0 +1,91 @@
+MIT License
+
+Copyright (c) 2025 La Cocina de Anita - Sistema de Pedidos Online
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+ADDITIONAL TERMS FOR COMMERCIAL USE:
+
+While this software is released under the MIT License, we kindly request that:
+
+1. If you use this code for a commercial restaurant or food service business,
+   please consider giving credit to "La Cocina de Anita" as the original 
+   inspiration for this ordering system.
+
+2. The name "La Cocina de Anita", logo, branding elements, and specific 
+   restaurant information contained in this project are NOT covered by this 
+   MIT license and remain the exclusive property of La Cocina de Anita.
+
+3. If you adapt this system for your own restaurant, please replace all 
+   branding, contact information, menu items, and payment details with 
+   your own information.
+
+4. We encourage you to contribute back improvements to the open source 
+   community by submitting pull requests or creating your own enhanced 
+   versions.
+
+TRADEMARK NOTICE:
+- "La Cocina de Anita" is a trademark of the restaurant business
+- The logo and specific branding elements are proprietary
+- Menu descriptions and restaurant-specific content are proprietary
+- Contact information (phone, Instagram, payment details) are private
+
+ATTRIBUTION NOTICE:
+This ordering system was originally created for La Cocina de Anita, a home-style 
+Venezuelan and Latin American restaurant. We believe in open source software 
+and hope this system helps other small food businesses grow online.
+
+For questions about commercial use or licensing, please contact:
+- Instagram: @codesentry
+- Instagram: @lacocinadeanita507
+
+---
+
+TECHNICAL SPECIFICATIONS COVERED BY MIT LICENSE:
+
+✅ HTML structure and layout
+✅ CSS styling and animations  
+✅ JavaScript functionality and logic
+✅ Responsive design implementation
+✅ WhatsApp integration methodology
+✅ Order management system logic
+✅ Form validation and user experience patterns
+✅ Mobile-first design principles
+
+❌ NOT COVERED (Proprietary):
+❌ "La Cocina de Anita" brand name and logo
+❌ Specific menu items and descriptions
+❌ Restaurant contact information
+❌ Payment account details
+❌ Social media handles
+❌ Business-specific content and imagery
+
+CONTRIBUTORS:
+- Original concept and development: [@Tykillita (Ruben Pino)]
+- Business requirements and testing: La Cocina de Anita team
+- Design inspiration: Modern web application standards
+- Technical stack: HTML5, CSS3, JavaScript ES6+
+
+VERSION HISTORY:
+- v1.0.0 (2025): Initial release with full ordering system
+- Future versions: See README.md for roadmap
+
+Thank you for respecting intellectual property while embracing open source! 🍽️✨
