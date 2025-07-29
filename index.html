@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -474,6 +473,12 @@
                         Arroz, carne mechada, caraotas (frijoles negros) y tajadas
                     </div>
                 </button>
+                <button class="option-btn" onclick="selectDish('hallaca')" style="background: linear-gradient(45deg, rgba(255,215,0,0.1), rgba(139,69,19,0.1)); border: 1px solid rgba(255,215,0,0.3);">
+                    🫔 Hallaca Venezolana
+                    <div style="font-size: 0.8rem; color: #ccc; margin-top: 5px;">
+                        Masa de maíz rellena con guiso, envuelta en hoja de plátano
+                    </div>
+                </button>
             </div>
 
             <!-- Paso 2: Acompañamiento -->
@@ -618,7 +623,7 @@
 
     <script>
         let currentOrder = {
-            dishType: '', // 'milanesa-pollo', 'milanesa-carne', 'pabellon'
+            dishType: '', // 'milanesa-pollo', 'milanesa-carne', 'pabellon', 'hallaca'
             protein: '', // solo para milanesas  
             side: '', // solo para milanesas
             ensalada: true,
@@ -669,6 +674,18 @@
                 currentOrder.side = 'arroz-caraotas';
                 currentOrder.ensalada = false; // Pabellón no lleva ensalada
                 currentOrder.tajada = true; // Ya viene incluida
+                
+                setTimeout(() => {
+                    document.getElementById('step4').classList.remove('step-hidden');
+                    document.querySelector('#step4 .step-title').textContent = 'Paso 2: ¿Para quién es este pedido?';
+                    document.getElementById('step4').scrollIntoView({ behavior: 'smooth' });
+                }, 300);
+            } else if (dishType === 'hallaca') {
+                // Para hallaca, saltar al paso 4 directamente (es un plato completo)
+                currentOrder.protein = 'hallaca-venezolana';
+                currentOrder.side = 'hallaca-completa';
+                currentOrder.ensalada = false; // Hallaca no lleva ensalada
+                currentOrder.tajada = false; // Hallaca no lleva tajada
                 
                 setTimeout(() => {
                     document.getElementById('step4').classList.remove('step-hidden');
@@ -741,7 +758,11 @@
             if (currentOrder.dishType === 'pabellon') {
                 proteinText = 'Pabellón Criollo Venezolano';
                 sideText = 'Arroz blanco, carne mechada, caraotas (frijoles negros) y tajadas de plátano';
-                priceText = '$5.00'; // Cambiado a $5.00
+                priceText = '$5.00';
+            } else if (currentOrder.dishType === 'hallaca') {
+                proteinText = 'Hallaca Venezolana';
+                sideText = 'Masa de maíz rellena con guiso de carne, pollo, cerdo y aceitunas, envuelta en hoja de plátano';
+                priceText = '$5.00';
             } else {
                 proteinText = currentOrder.protein === 'pollo' ? 'Milanesa de Pollo' : 'Milanesa de Carne';
                 sideText = currentOrder.side === 'pure' ? 'Puré de Papa' : 'Arroz';
@@ -756,7 +777,7 @@
                 </div>
             `;
             
-            if (currentOrder.dishType !== 'pabellon') {
+            if (currentOrder.dishType !== 'pabellon' && currentOrder.dishType !== 'hallaca') {
                 summaryHTML += `
                     <div class="summary-item">
                         <strong>🍽️ Acompañamiento:</strong> ${sideText}
@@ -831,6 +852,11 @@
                         <p><strong>🇻🇪</strong> Pabellón Criollo Venezolano</p>
                         <p><strong>🍽️</strong> Arroz, carne mechada, caraotas (frijoles negros) y tajadas</p>
                     `;
+                } else if (order.dishType === 'hallaca') {
+                    dishDescription = `
+                        <p><strong>🫔</strong> Hallaca Venezolana</p>
+                        <p><strong>🍽️</strong> Masa de maíz rellena con guiso, envuelta en hoja de plátano</p>
+                    `;
                 } else {
                     const proteinText = order.protein === 'pollo' ? 'Milanesa de Pollo' : 'Milanesa de Carne';
                     const sideText = order.side === 'pure' ? 'Puré de Papa' : 'Arroz';
@@ -903,6 +929,9 @@
                 if (order.dishType === 'pabellon') {
                     message += `🇻🇪 Pabellón Criollo Venezolano\n`;
                     message += `🍽️ Arroz blanco, carne mechada, caraotas (frijoles negros) y tajadas\n`;
+                } else if (order.dishType === 'hallaca') {
+                    message += `🫔 Hallaca Venezolana\n`;
+                    message += `🍽️ Masa de maíz rellena con guiso de carne, pollo, cerdo y aceitunas, envuelta en hoja de plátano\n`;
                 } else {
                     const proteinText = order.protein === 'pollo' ? 'Milanesa de Pollo' : 'Milanesa de Carne';
                     const sideText = order.side === 'pure' ? 'Puré de Papa' : 'Arroz';
@@ -1010,4 +1039,4 @@
         });
     </script>
 </body>
-</html>
+</html>-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98
