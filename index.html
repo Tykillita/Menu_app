@@ -761,7 +761,7 @@
                 priceText = '$5.00';
             } else if (currentOrder.dishType === 'hallaca') {
                 proteinText = 'Hallaca Venezolana';
-                sideText = 'Masa de maíz rellena con guiso de carne, pollo, cerdo y aceitunas, envuelta en hoja de plátano';
+                sideText = 'Masa de maíz rellena con guiso de carne, aceitunas, pasas, etc...';
                 priceText = '$5.00';
             } else {
                 proteinText = currentOrder.protein === 'pollo' ? 'Milanesa de Pollo' : 'Milanesa de Carne';
@@ -931,7 +931,7 @@
                     message += `🍽️ Arroz blanco, carne mechada, caraotas (frijoles negros) y tajadas\n`;
                 } else if (order.dishType === 'hallaca') {
                     message += `🫔 Hallaca Venezolana\n`;
-                    message += `🍽️ Masa de maíz rellena con guiso de carne, pollo, cerdo y aceitunas, envuelta en hoja de plátano\n`;
+                    message += `🍽️ Masa de maíz rellena con guiso de carne, aceitunas, pasas, etc...\n`;
                 } else {
                     const proteinText = order.protein === 'pollo' ? 'Milanesa de Pollo' : 'Milanesa de Carne';
                     const sideText = order.side === 'pure' ? 'Puré de Papa' : 'Arroz';
@@ -1039,4 +1039,4 @@
         });
     </script>
 </body>
-</html>-
+</html>
