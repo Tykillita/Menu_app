@@ -246,12 +246,6 @@
             border-bottom: 1px solid rgba(255,255,255,0.1);
         }
 
-        .navigation-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
         .btn-back {
             background: linear-gradient(45deg, #666, #888);
             flex: 1;
@@ -398,6 +392,12 @@
             margin-bottom: 10px;
         }
 
+        .navigation-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
         /* Responsive */
         @media (max-width: 480px) {
             .container {
@@ -488,7 +488,41 @@
                 <button class="option-btn" onclick="selectSide('arroz')">🍚 Arroz</button>
             </div>
 
-            <!-- Paso 3: Extras (siempre visible después del paso 2) -->
+            <!-- Paso 2B: Opciones de Hallaca -->
+            <div id="step2b" class="step-container step-hidden">
+                <h3 class="step-title">Paso 2: Elige tu opción de Hallaca</h3>
+                <button class="option-btn" onclick="selectHallacaOption('individual')" style="background: linear-gradient(45deg, rgba(255,215,0,0.1), rgba(139,69,19,0.1)); border: 1px solid rgba(255,215,0,0.3);">
+                    🫔 Hallaca Individual
+                    <div style="font-size: 0.9rem; color: #4ecdc4; margin-top: 8px; font-weight: bold;">
+                        💰 $3.00 cada una
+                    </div>
+                </button>
+                <button class="option-btn" onclick="selectHallacaOption('bulk')" style="background: linear-gradient(45deg, rgba(40,167,69,0.1), rgba(32,201,151,0.1)); border: 1px solid rgba(40,167,69,0.3);">
+                    🫔 Hallacas por Mayor (10+ unidades)
+                    <div style="font-size: 0.9rem; color: #28a745; margin-top: 8px; font-weight: bold;">
+                        💰 $2.50 cada una (mínimo 10)
+                    </div>
+                    <div style="font-size: 0.8rem; color: #ccc; margin-top: 5px;">
+                        Ideal para fiestas y reuniones familiares
+                    </div>
+                </button>
+            </div>
+
+            <!-- Paso 2C: Cantidad de Hallacas -->
+            <div id="step2c" class="step-container step-hidden">
+                <h3 class="step-title">Paso 3: ¿Cuántas Hallacas quieres?</h3>
+                <p style="color: #ccc; margin-bottom: 20px; text-align: center;">
+                    Precio por mayor: <strong style="color: #28a745;">$2.50 cada una</strong> (mínimo 10 unidades)
+                </p>
+                <div class="form-group">
+                    <label for="hallacaQuantityInput">🫔 Cantidad de Hallacas:</label>
+                    <input type="number" id="hallacaQuantityInput" class="text-input" placeholder="Ej: 12" min="10" value="10" required>
+                    <small style="color: #999; font-size: 0.9rem;">Mínimo 10 unidades para precio por mayor</small>
+                </div>
+                <button class="btn" style="width: 100%; margin-top: 15px;" onclick="setHallacaQuantity()">✅ Confirmar Cantidad</button>
+            </div>
+
+            <!-- Paso 3: Personalizar Plato -->
             <div id="step3" class="step-container step-hidden">
                 <h3 class="step-title">Paso 3: Personaliza tu Plato (Opcional)</h3>
                 <div class="extras-note">
@@ -623,9 +657,11 @@
 
     <script>
         let currentOrder = {
-            dishType: '', // 'milanesa-pollo', 'milanesa-carne', 'pabellon', 'hallaca'
-            protein: '', // solo para milanesas  
-            side: '', // solo para milanesas
+            dishType: '',
+            protein: '',
+            side: '',
+            hallacaOption: '',
+            hallacaQuantity: 1,
             ensalada: true,
             tajada: true,
             forWho: ''
@@ -637,8 +673,6 @@
             phone: '',
             address: ''
         };
-        
-        let currentStep = 1;
 
         function openMenu() {
             document.getElementById('welcomeScreen').classList.add('hidden');
@@ -662,18 +696,16 @@
         function selectDish(dishType) {
             currentOrder.dishType = dishType;
             
-            // Marcar opción seleccionada
             document.querySelectorAll('#step1 .option-btn').forEach(btn => {
                 btn.classList.remove('selected');
             });
             event.target.classList.add('selected');
             
             if (dishType === 'pabellon') {
-                // Para pabellón, saltar al paso 4 directamente (sin extras)
                 currentOrder.protein = 'carne-mechada';
                 currentOrder.side = 'arroz-caraotas';
-                currentOrder.ensalada = false; // Pabellón no lleva ensalada
-                currentOrder.tajada = true; // Ya viene incluida
+                currentOrder.ensalada = false;
+                currentOrder.tajada = true;
                 
                 setTimeout(() => {
                     document.getElementById('step4').classList.remove('step-hidden');
@@ -681,19 +713,16 @@
                     document.getElementById('step4').scrollIntoView({ behavior: 'smooth' });
                 }, 300);
             } else if (dishType === 'hallaca') {
-                // Para hallaca, saltar al paso 4 directamente (es un plato completo)
                 currentOrder.protein = 'hallaca-venezolana';
                 currentOrder.side = 'hallaca-completa';
-                currentOrder.ensalada = false; // Hallaca no lleva ensalada
-                currentOrder.tajada = false; // Hallaca no lleva tajada
+                currentOrder.ensalada = false;
+                currentOrder.tajada = false;
                 
                 setTimeout(() => {
-                    document.getElementById('step4').classList.remove('step-hidden');
-                    document.querySelector('#step4 .step-title').textContent = 'Paso 2: ¿Para quién es este pedido?';
-                    document.getElementById('step4').scrollIntoView({ behavior: 'smooth' });
+                    document.getElementById('step2b').classList.remove('step-hidden');
+                    document.getElementById('step2b').scrollIntoView({ behavior: 'smooth' });
                 }, 300);
             } else {
-                // Para milanesas, mostrar paso 2 (acompañamiento)
                 currentOrder.protein = dishType === 'milanesa-pollo' ? 'pollo' : 'carne';
                 
                 setTimeout(() => {
@@ -703,16 +732,53 @@
             }
         }
 
+        function selectHallacaOption(option) {
+            currentOrder.hallacaOption = option;
+            
+            document.querySelectorAll('#step2b .option-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            event.target.classList.add('selected');
+            
+            if (option === 'individual') {
+                currentOrder.hallacaQuantity = 1;
+                setTimeout(() => {
+                    document.getElementById('step4').classList.remove('step-hidden');
+                    document.querySelector('#step4 .step-title').textContent = 'Paso 3: ¿Para quién es este pedido?';
+                    document.getElementById('step4').scrollIntoView({ behavior: 'smooth' });
+                }, 300);
+            } else {
+                setTimeout(() => {
+                    document.getElementById('step2c').classList.remove('step-hidden');
+                    document.getElementById('step2c').scrollIntoView({ behavior: 'smooth' });
+                }, 300);
+            }
+        }
+
+        function setHallacaQuantity() {
+            const quantity = parseInt(document.getElementById('hallacaQuantityInput').value);
+            if (!quantity || quantity < 10) {
+                alert('Para precio por mayor necesitas mínimo 10 hallacas');
+                return;
+            }
+            
+            currentOrder.hallacaQuantity = quantity;
+            
+            setTimeout(() => {
+                document.getElementById('step4').classList.remove('step-hidden');
+                document.querySelector('#step4 .step-title').textContent = 'Paso 4: ¿Para quién es este pedido?';
+                document.getElementById('step4').scrollIntoView({ behavior: 'smooth' });
+            }, 300);
+        }
+
         function selectSide(side) {
             currentOrder.side = side;
             
-            // Marcar opción seleccionada
             document.querySelectorAll('#step2 .option-btn').forEach(btn => {
                 btn.classList.remove('selected');
             });
             event.target.classList.add('selected');
             
-            // Mostrar pasos 3 y 4 automáticamente
             setTimeout(() => {
                 document.getElementById('step3').classList.remove('step-hidden');
                 document.getElementById('step4').classList.remove('step-hidden');
@@ -754,18 +820,29 @@
             let proteinText = '';
             let sideText = '';
             let priceText = '$5.00';
+            let totalPrice = 5.00;
             
             if (currentOrder.dishType === 'pabellon') {
                 proteinText = 'Pabellón Criollo Venezolano';
                 sideText = 'Arroz blanco, carne mechada, caraotas (frijoles negros) y tajadas de plátano';
                 priceText = '$5.00';
+                totalPrice = 5.00;
             } else if (currentOrder.dishType === 'hallaca') {
-                proteinText = 'Hallaca Venezolana';
-                sideText = 'Masa de maíz rellena con guiso de carne, aceitunas, pasas, etc...';
-                priceText = '$5.00';
+                if (currentOrder.hallacaOption === 'individual') {
+                    proteinText = 'Hallaca Venezolana Individual';
+                    sideText = 'Masa de maíz rellena con guiso de carne, pollo, cerdo y aceitunas, envuelta en hoja de plátano';
+                    priceText = '$3.00';
+                    totalPrice = 3.00;
+                } else {
+                    proteinText = `${currentOrder.hallacaQuantity} Hallacas Venezolanas (Por Mayor)`;
+                    sideText = 'Masa de maíz rellena con guiso de carne, pollo, cerdo y aceitunas, envuelta en hoja de plátano';
+                    totalPrice = currentOrder.hallacaQuantity * 2.50;
+                    priceText = `${totalPrice.toFixed(2)} (${currentOrder.hallacaQuantity} x $2.50)`;
+                }
             } else {
                 proteinText = currentOrder.protein === 'pollo' ? 'Milanesa de Pollo' : 'Milanesa de Carne';
                 sideText = currentOrder.side === 'pure' ? 'Puré de Papa' : 'Arroz';
+                totalPrice = 5.00;
             }
             
             let summaryHTML = `
@@ -798,41 +875,32 @@
             }
             
             document.getElementById('summaryContent').innerHTML = summaryHTML;
-            
-            // Actualizar precio en el resumen
             document.querySelector('.price-display strong').innerHTML = `💰 Precio: ${priceText}`;
         }
 
         function addAnotherOrder() {
-            // Guardar pedido actual
             allOrders.push({...currentOrder});
             
-            // Reset para nuevo pedido
             currentOrder = {
                 dishType: '',
                 protein: '',
                 side: '',
+                hallacaOption: '',
+                hallacaQuantity: 1,
                 ensalada: true,
                 tajada: true,
                 forWho: ''
             };
             
-            // Ocultar resúmenes
             document.getElementById('orderSummary').classList.add('step-hidden');
             document.getElementById('allOrdersSummary').classList.add('step-hidden');
             
-            // Reset pasos
             resetSteps();
-            
-            // Volver al paso 1
             document.getElementById('step1').scrollIntoView({ behavior: 'smooth' });
         }
 
         function proceedToCheckout() {
-            // Guardar pedido actual
             allOrders.push({...currentOrder});
-            
-            // Mostrar todos los pedidos
             showAllOrdersSummary();
         }
 
@@ -844,20 +912,32 @@
             let total = 0;
             
             allOrders.forEach((order, index) => {
-                let orderPrice = 5.00; // Todos los platos cuestan $5.00
+                let orderPrice = 5.00;
                 let dishDescription = '';
                 
                 if (order.dishType === 'pabellon') {
+                    orderPrice = 5.00;
                     dishDescription = `
                         <p><strong>🇻🇪</strong> Pabellón Criollo Venezolano</p>
                         <p><strong>🍽️</strong> Arroz, carne mechada, caraotas (frijoles negros) y tajadas</p>
                     `;
                 } else if (order.dishType === 'hallaca') {
-                    dishDescription = `
-                        <p><strong>🫔</strong> Hallaca Venezolana</p>
-                        <p><strong>🍽️</strong> Masa de maíz rellena con guiso, envuelta en hoja de plátano</p>
-                    `;
+                    if (order.hallacaOption === 'individual') {
+                        orderPrice = 3.00;
+                        dishDescription = `
+                            <p><strong>🫔</strong> Hallaca Venezolana Individual</p>
+                            <p><strong>🍽️</strong> Masa de maíz rellena con guiso, envuelta en hoja de plátano</p>
+                        `;
+                    } else {
+                        orderPrice = order.hallacaQuantity * 2.50;
+                        dishDescription = `
+                            <p><strong>🫔</strong> ${order.hallacaQuantity} Hallacas Venezolanas (Por Mayor)</p>
+                            <p><strong>🍽️</strong> Masa de maíz rellena con guiso, envuelta en hoja de plátano</p>
+                            <p><strong>💰</strong> ${order.hallacaQuantity} x $2.50 = ${orderPrice.toFixed(2)}</p>
+                        `;
+                    }
                 } else {
+                    orderPrice = 5.00;
                     const proteinText = order.protein === 'pollo' ? 'Milanesa de Pollo' : 'Milanesa de Carne';
                     const sideText = order.side === 'pure' ? 'Puré de Papa' : 'Arroz';
                     
@@ -875,7 +955,7 @@
                     <div class="order-item">
                         <h4>Pedido ${index + 1} - ${order.forWho}</h4>
                         ${dishDescription}
-                        <p><strong>💰</strong> ${orderPrice.toFixed(2)}</p>
+                        ${order.dishType !== 'hallaca' || order.hallacaOption === 'individual' ? `<p><strong>💰</strong> ${orderPrice.toFixed(2)}</p>` : ''}
                     </div>
                 `;
             });
@@ -898,7 +978,6 @@
         }
 
         function sendFinalOrder() {
-            // Validar datos del cliente
             const name = document.getElementById('customerName').value.trim();
             const phone = document.getElementById('customerPhone').value.trim();
             const address = document.getElementById('customerAddress').value.trim();
@@ -910,7 +989,6 @@
             
             customerData = { name, phone, address };
             
-            // Crear mensaje para WhatsApp
             let message = `🍽️ *PEDIDO - LA COCINA DE ANITA*\n\n`;
             message += `👤 *DATOS DEL CLIENTE:*\n`;
             message += `• Nombre: ${customerData.name}\n`;
@@ -922,17 +1000,27 @@
             let total = 0;
             
             allOrders.forEach((order, index) => {
-                let orderPrice = 5.00; // Todos los platos cuestan $5.00
+                let orderPrice = 5.00;
                 
                 message += `\n*Pedido ${index + 1} - ${order.forWho}:*\n`;
                 
                 if (order.dishType === 'pabellon') {
+                    orderPrice = 5.00;
                     message += `🇻🇪 Pabellón Criollo Venezolano\n`;
                     message += `🍽️ Arroz blanco, carne mechada, caraotas (frijoles negros) y tajadas\n`;
                 } else if (order.dishType === 'hallaca') {
-                    message += `🫔 Hallaca Venezolana\n`;
-                    message += `🍽️ Masa de maíz rellena con guiso de carne, aceitunas, pasas, etc...\n`;
+                    if (order.hallacaOption === 'individual') {
+                        orderPrice = 3.00;
+                        message += `🫔 Hallaca Venezolana Individual\n`;
+                        message += `🍽️ Masa de maíz rellena con guiso de carne, pollo, cerdo y aceitunas, envuelta en hoja de plátano\n`;
+                    } else {
+                        orderPrice = order.hallacaQuantity * 2.50;
+                        message += `🫔 ${order.hallacaQuantity} Hallacas Venezolanas (Por Mayor)\n`;
+                        message += `🍽️ Masa de maíz rellena con guiso de carne, pollo, cerdo y aceitunas, envuelta en hoja de plátano\n`;
+                        message += `📦 Cantidad: ${order.hallacaQuantity} unidades x $2.50\n`;
+                    }
                 } else {
+                    orderPrice = 5.00;
                     const proteinText = order.protein === 'pollo' ? 'Milanesa de Pollo' : 'Milanesa de Carne';
                     const sideText = order.side === 'pure' ? 'Puré de Papa' : 'Arroz';
                     const ensaladaText = order.ensalada ? 'con ensalada' : 'sin ensalada';
@@ -957,41 +1045,39 @@
         }
 
         function resetSteps() {
-            // Ocultar todos los pasos excepto el 1
             document.getElementById('step2').classList.add('step-hidden');
+            document.getElementById('step2b').classList.add('step-hidden');
+            document.getElementById('step2c').classList.add('step-hidden');
             document.getElementById('step3').classList.add('step-hidden');
             document.getElementById('step4').classList.add('step-hidden');
             document.getElementById('customerForm').classList.add('step-hidden');
             
-            // Restaurar textos originales
             document.querySelector('#step3 .step-title').textContent = 'Paso 3: Personaliza tu Plato (Opcional)';
             document.querySelector('#step3 .extras-note p:first-child').textContent = '💡 Por defecto incluimos ensalada rallada y tajada';
             document.querySelector('#step3 .extras-note p:last-child').textContent = 'Puedes quitarlas si no las quieres tocando los botones';
             document.querySelector('#step4 .step-title').textContent = 'Paso 4: ¿Para quién es este pedido?';
             
-            // Mostrar botón de tajada
             document.getElementById('tajadaBtn').style.display = 'block';
             document.getElementById('ensaladaBtn').style.width = '';
             
-            // Limpiar selecciones
             document.querySelectorAll('.option-btn').forEach(btn => {
                 btn.classList.remove('selected');
             });
             
-            // Reset botones de extras
             document.getElementById('ensaladaBtn').classList.add('active');
             document.getElementById('tajadaBtn').classList.add('active');
             
-            // Limpiar input
             document.getElementById('forWhoInput').value = '';
+            document.getElementById('hallacaQuantityInput').value = '10';
         }
 
         function goBack() {
-            // Resetear todo
             currentOrder = {
                 dishType: '',
                 protein: '',
                 side: '',
+                hallacaOption: '',
+                hallacaQuantity: 1,
                 ensalada: true,
                 tajada: true,
                 forWho: ''
@@ -999,32 +1085,29 @@
             allOrders = [];
             customerData = { name: '', phone: '', address: '' };
             
-            // Limpiar formularios
             document.getElementById('customerName').value = '';
             document.getElementById('customerPhone').value = '';
             document.getElementById('customerAddress').value = '';
             
-            // Ocultar todas las secciones del menú
             document.getElementById('step2').classList.add('step-hidden');
+            document.getElementById('step2b').classList.add('step-hidden');
+            document.getElementById('step2c').classList.add('step-hidden');
             document.getElementById('step3').classList.add('step-hidden');
             document.getElementById('step4').classList.add('step-hidden');
             document.getElementById('orderSummary').classList.add('step-hidden');
             document.getElementById('allOrdersSummary').classList.add('step-hidden');
             document.getElementById('customerForm').classList.add('step-hidden');
             
-            // Limpiar selecciones
             document.querySelectorAll('.option-btn').forEach(btn => {
                 btn.classList.remove('selected');
             });
             
-            // Reset botones de extras
             document.getElementById('ensaladaBtn').classList.add('active');
             document.getElementById('tajadaBtn').classList.add('active');
             
-            // Limpiar input
             document.getElementById('forWhoInput').value = '';
+            document.getElementById('hallacaQuantityInput').value = '10';
             
-            // Volver al inicio
             document.getElementById('menuScreen').style.display = 'none';
             document.getElementById('welcomeScreen').classList.remove('hidden');
         }
