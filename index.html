@@ -436,6 +436,7 @@
             <p class="welcome-subtitle">Comida casera con amor</p>
             
             <button class="btn" onclick="openMenu()">🍽️ Ver Menú de la Semana</button>
+            <button class="btn" onclick="openDessertMenu()">🍰 Ver Menú de Postres</button>
             <button class="btn btn-secondary" onclick="closeApp()">❌ Cerrar</button>
             
             <div class="social-links">
@@ -662,12 +663,14 @@
             side: '',
             hallacaOption: '',
             hallacaQuantity: 1,
+            quantity: 1,
             ensalada: true,
             tajada: true,
             forWho: ''
         };
         
         let allOrders = [];
+        let isDessertMode = false;
         let customerData = {
             name: '',
             phone: '',
@@ -675,8 +678,161 @@
         };
 
         function openMenu() {
+            isDessertMode = false;
+            showMenuScreen('🍽️ Arma tu Comida', 'Selecciona tus opciones paso a paso');
+        }
+
+        function openDessertMenu() {
+            isDessertMode = true;
+            showMenuScreen('🍰 Menú de Postres', 'Endulza tu día con nuestros postres caseros');
+        }
+
+        function showMenuScreen(title, subtitle) {
             document.getElementById('welcomeScreen').classList.add('hidden');
             document.getElementById('menuScreen').style.display = 'block';
+            
+            document.querySelector('.menu-title').textContent = title;
+            document.querySelector('.menu-subtitle').textContent = subtitle;
+            
+            // Resetear y configurar pasos según el modo
+            resetSteps();
+            setupMenuSteps();
+        }
+
+        function setupMenuSteps() {
+            const step1 = document.getElementById('step1');
+            const step1Title = step1.querySelector('.step-title');
+            
+            if (isDessertMode) {
+                step1Title.textContent = 'Paso 1: Elige tu Postre';
+                step1.innerHTML = `
+                    <h3 class="step-title">Paso 1: Elige tu Postre</h3>
+                    <button class="option-btn" onclick="selectDessert('dulce-maracuya')">
+                        🥭 Dulce de Maracuyá (Parchita)
+                        <div style="font-size: 0.9rem; color: #4ecdc4; margin-top: 8px; font-weight: bold;">
+                            💰 $2.00 cada uno
+                        </div>
+                    </button>
+                `;
+            } else {
+                step1Title.textContent = 'Paso 1: Elige tu Plato Principal';
+                step1.innerHTML = `
+                    <h3 class="step-title">Paso 1: Elige tu Plato Principal</h3>
+                    <button class="option-btn" onclick="selectDish('milanesa-pollo')">🐔 Milanesa de Pollo</button>
+                    <button class="option-btn" onclick="selectDish('milanesa-carne')">🥩 Milanesa de Carne</button>
+                    <button class="option-btn" onclick="selectDish('pabellon')" style="background: linear-gradient(45deg, rgba(255,193,7,0.1), rgba(220,53,69,0.1)); border: 1px solid rgba(255,193,7,0.3);">
+                        🇻🇪 Pabellón Criollo Venezolano
+                        <div style="font-size: 0.8rem; color: #ccc; margin-top: 5px;">
+                            Arroz, carne mechada, caraotas (frijoles negros) y tajadas
+                        </div>
+                    </button>
+                    <button class="option-btn" onclick="selectDish('hallaca')" style="background: linear-gradient(45deg, rgba(255,215,0,0.1), rgba(139,69,19,0.1)); border: 1px solid rgba(255,215,0,0.3);">
+                        🫔 Hallaca Venezolana
+                        <div style="font-size: 0.8rem; color: #ccc; margin-top: 5px;">
+                            Masa de maíz rellena con guiso, envuelta en hoja de plátano
+                        </div>
+                    </button>
+                `;
+            }
+        }
+
+        function selectDessert(dessertType) {
+            currentOrder.dishType = dessertType;
+            currentOrder.protein = 'dulce-maracuya';
+            currentOrder.side = 'postre-casero';
+            currentOrder.ensalada = false;
+            currentOrder.tajada = false;
+            
+            document.querySelectorAll('#step1 .option-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            event.target.classList.add('selected');
+            
+            setTimeout(() => {
+                showQuantitySelector();
+            }, 300);
+        }
+
+        function showQuantitySelector() {
+            const step2 = document.getElementById('step2');
+            let maxQuantity = 20;
+            let title = 'Paso 2: ¿Cuántos quieres?';
+            
+            if (currentOrder.dishType === 'hallaca' && currentOrder.hallacaOption === 'individual') {
+                maxQuantity = 9;
+                title = 'Paso 2: ¿Cuántas Hallacas? (máximo 9)';
+            }
+            
+            step2.innerHTML = `
+                <h3 class="step-title">${title}</h3>
+                <div style="display: flex; align-items: center; justify-content: center; gap: 20px; margin: 20px 0;">
+                    <button class="btn" onclick="changeQuantity(-1)" style="width: 60px; height: 60px; font-size: 1.5rem;">➖</button>
+                    <div style="text-align: center;">
+                        <div style="font-size: 2rem; font-weight: bold; color: #4ecdc4;">${currentOrder.quantity}</div>
+                        <div style="color: #ccc; margin-top: 5px;">unidades</div>
+                    </div>
+                    <button class="btn" onclick="changeQuantity(1)" style="width: 60px; height: 60px; font-size: 1.5rem;">➕</button>
+                </div>
+                <div class="price-display">
+                    <strong style="font-size: 1.2rem; color: #4ecdc4;" id="quantityPrice">💰 Total: ${(getCurrentPrice() * currentOrder.quantity).toFixed(2)}</strong>
+                </div>
+                <button class="btn" style="width: 100%; margin-top: 15px;" onclick="confirmQuantity()">✅ Confirmar Cantidad</button>
+            `;
+            
+            step2.classList.remove('step-hidden');
+            step2.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function getCurrentPrice() {
+            if (isDessertMode) return 2.00;
+            if (currentOrder.dishType === 'hallaca' && currentOrder.hallacaOption === 'individual') return 3.00;
+            if (currentOrder.dishType === 'hallaca' && currentOrder.hallacaOption === 'bulk') return 2.50;
+            if (currentOrder.dishType === 'pabellon') return 5.00;
+            return 5.00; // milanesas
+        }
+
+        function changeQuantity(change) {
+            let maxQuantity = 20;
+            
+            if (currentOrder.dishType === 'hallaca' && currentOrder.hallacaOption === 'individual') {
+                maxQuantity = 9;
+            }
+            
+            const newQuantity = currentOrder.quantity + change;
+            
+            if (newQuantity >= 1 && newQuantity <= maxQuantity) {
+                currentOrder.quantity = newQuantity;
+                
+                // Actualizar display
+                const quantityDisplay = document.querySelector('#step2 .text-align-center div:first-child') || 
+                                      document.querySelector('#step2 div[style*="font-size: 2rem"]');
+                if (quantityDisplay) {
+                    quantityDisplay.textContent = currentOrder.quantity;
+                }
+                
+                // Actualizar precio
+                const priceDisplay = document.getElementById('quantityPrice');
+                if (priceDisplay) {
+                    const totalPrice = getCurrentPrice() * currentOrder.quantity;
+                    priceDisplay.innerHTML = `💰 Total: ${totalPrice.toFixed(2)}`;
+                }
+            }
+        }
+
+        function confirmQuantity() {
+            if (isDessertMode) {
+                setTimeout(() => {
+                    document.getElementById('step4').classList.remove('step-hidden');
+                    document.querySelector('#step4 .step-title').textContent = 'Paso 3: ¿Para quién es este pedido?';
+                    document.getElementById('step4').scrollIntoView({ behavior: 'smooth' });
+                }, 300);
+            } else if (currentOrder.dishType === 'hallaca' && currentOrder.hallacaOption === 'individual') {
+                setTimeout(() => {
+                    document.getElementById('step4').classList.remove('step-hidden');
+                    document.querySelector('#step4 .step-title').textContent = 'Paso 3: ¿Para quién es este pedido?';
+                    document.getElementById('step4').scrollIntoView({ behavior: 'smooth' });
+                }, 300);
+            }
         }
 
         function closeApp() {
@@ -708,9 +864,7 @@
                 currentOrder.tajada = true;
                 
                 setTimeout(() => {
-                    document.getElementById('step4').classList.remove('step-hidden');
-                    document.querySelector('#step4 .step-title').textContent = 'Paso 2: ¿Para quién es este pedido?';
-                    document.getElementById('step4').scrollIntoView({ behavior: 'smooth' });
+                    showQuantitySelector();
                 }, 300);
             } else if (dishType === 'hallaca') {
                 currentOrder.protein = 'hallaca-venezolana';
@@ -726,8 +880,7 @@
                 currentOrder.protein = dishType === 'milanesa-pollo' ? 'pollo' : 'carne';
                 
                 setTimeout(() => {
-                    document.getElementById('step2').classList.remove('step-hidden');
-                    document.getElementById('step2').scrollIntoView({ behavior: 'smooth' });
+                    showQuantitySelector();
                 }, 300);
             }
         }
@@ -743,9 +896,7 @@
             if (option === 'individual') {
                 currentOrder.hallacaQuantity = 1;
                 setTimeout(() => {
-                    document.getElementById('step4').classList.remove('step-hidden');
-                    document.querySelector('#step4 .step-title').textContent = 'Paso 3: ¿Para quién es este pedido?';
-                    document.getElementById('step4').scrollIntoView({ behavior: 'smooth' });
+                    showQuantitySelector();
                 }, 300);
             } else {
                 setTimeout(() => {
@@ -781,8 +932,19 @@
             
             setTimeout(() => {
                 document.getElementById('step3').classList.remove('step-hidden');
-                document.getElementById('step4').classList.remove('step-hidden');
                 document.getElementById('step3').scrollIntoView({ behavior: 'smooth' });
+                
+                // Agregar botón para continuar después de personalizar
+                const step3 = document.getElementById('step3');
+                if (!step3.querySelector('.continue-btn')) {
+                    const continueBtn = document.createElement('button');
+                    continueBtn.className = 'btn continue-btn';
+                    continueBtn.style.width = '100%';
+                    continueBtn.style.marginTop = '20px';
+                    continueBtn.textContent = '➡️ Continuar';
+                    continueBtn.onclick = () => showQuantitySelector();
+                    step3.appendChild(continueBtn);
+                }
             }, 300);
         }
 
@@ -822,17 +984,22 @@
             let priceText = '$5.00';
             let totalPrice = 5.00;
             
-            if (currentOrder.dishType === 'pabellon') {
-                proteinText = 'Pabellón Criollo Venezolano';
+            if (isDessertMode) {
+                proteinText = `${currentOrder.quantity}x Dulce de Maracuyá (Parchita)`;
+                sideText = 'Postre casero artesanal';
+                totalPrice = 2.00 * currentOrder.quantity;
+                priceText = `${totalPrice.toFixed(2)} (${currentOrder.quantity} x $2.00)`;
+            } else if (currentOrder.dishType === 'pabellon') {
+                proteinText = `${currentOrder.quantity}x Pabellón Criollo Venezolano`;
                 sideText = 'Arroz blanco, carne mechada, caraotas (frijoles negros) y tajadas de plátano';
-                priceText = '$5.00';
-                totalPrice = 5.00;
+                totalPrice = 5.00 * currentOrder.quantity;
+                priceText = currentOrder.quantity > 1 ? `${totalPrice.toFixed(2)} (${currentOrder.quantity} x $5.00)` : '$5.00';
             } else if (currentOrder.dishType === 'hallaca') {
                 if (currentOrder.hallacaOption === 'individual') {
-                    proteinText = 'Hallaca Venezolana Individual';
+                    proteinText = `${currentOrder.quantity}x Hallaca${currentOrder.quantity > 1 ? 's' : ''} Venezolana${currentOrder.quantity > 1 ? 's' : ''} Individual${currentOrder.quantity > 1 ? 'es' : ''}`;
                     sideText = 'Masa de maíz rellena con guiso de carne, pollo, cerdo y aceitunas, envuelta en hoja de plátano';
-                    priceText = '$3.00';
-                    totalPrice = 3.00;
+                    totalPrice = 3.00 * currentOrder.quantity;
+                    priceText = currentOrder.quantity > 1 ? `${totalPrice.toFixed(2)} (${currentOrder.quantity} x $3.00)` : '$3.00';
                 } else {
                     proteinText = `${currentOrder.hallacaQuantity} Hallacas Venezolanas (Por Mayor)`;
                     sideText = 'Masa de maíz rellena con guiso de carne, pollo, cerdo y aceitunas, envuelta en hoja de plátano';
@@ -840,9 +1007,11 @@
                     priceText = `${totalPrice.toFixed(2)} (${currentOrder.hallacaQuantity} x $2.50)`;
                 }
             } else {
-                proteinText = currentOrder.protein === 'pollo' ? 'Milanesa de Pollo' : 'Milanesa de Carne';
+                const dishName = currentOrder.protein === 'pollo' ? 'Milanesa de Pollo' : 'Milanesa de Carne';
+                proteinText = `${currentOrder.quantity}x ${dishName}`;
                 sideText = currentOrder.side === 'pure' ? 'Puré de Papa' : 'Arroz';
-                totalPrice = 5.00;
+                totalPrice = 5.00 * currentOrder.quantity;
+                priceText = currentOrder.quantity > 1 ? `${totalPrice.toFixed(2)} (${currentOrder.quantity} x $5.00)` : '$5.00';
             }
             
             let summaryHTML = `
@@ -850,26 +1019,34 @@
                     <strong>👤 Para:</strong> ${currentOrder.forWho}
                 </div>
                 <div class="summary-item">
-                    <strong>🍽️ Plato:</strong> ${proteinText}
+                    <strong>🍽️ ${isDessertMode ? 'Postre' : 'Plato'}:</strong> ${proteinText}
                 </div>
             `;
             
-            if (currentOrder.dishType !== 'pabellon' && currentOrder.dishType !== 'hallaca') {
-                summaryHTML += `
-                    <div class="summary-item">
-                        <strong>🍽️ Acompañamiento:</strong> ${sideText}
-                    </div>
-                    <div class="summary-item">
-                        <strong>🥗 Ensalada Rallada:</strong> ${currentOrder.ensalada ? '✅ Incluida' : '❌ Sin ensalada'}
-                    </div>
-                    <div class="summary-item">
-                        <strong>🍌 Tajada:</strong> ${currentOrder.tajada ? '✅ Incluida' : '❌ Sin tajada'}
-                    </div>
-                `;
+            if (!isDessertMode) {
+                if (currentOrder.dishType !== 'pabellon' && currentOrder.dishType !== 'hallaca') {
+                    summaryHTML += `
+                        <div class="summary-item">
+                            <strong>🍽️ Acompañamiento:</strong> ${sideText}
+                        </div>
+                        <div class="summary-item">
+                            <strong>🥗 Ensalada Rallada:</strong> ${currentOrder.ensalada ? '✅ Incluida' : '❌ Sin ensalada'}
+                        </div>
+                        <div class="summary-item">
+                            <strong>🍌 Tajada:</strong> ${currentOrder.tajada ? '✅ Incluida' : '❌ Sin tajada'}
+                        </div>
+                    `;
+                } else {
+                    summaryHTML += `
+                        <div class="summary-item">
+                            <strong>🍽️ Incluye:</strong> ${sideText}
+                        </div>
+                    `;
+                }
             } else {
                 summaryHTML += `
                     <div class="summary-item">
-                        <strong>🍽️ Incluye:</strong> ${sideText}
+                        <strong>🍯 Descripción:</strong> ${sideText}
                     </div>
                 `;
             }
@@ -887,6 +1064,7 @@
                 side: '',
                 hallacaOption: '',
                 hallacaQuantity: 1,
+                quantity: 1,
                 ensalada: true,
                 tajada: true,
                 forWho: ''
@@ -896,6 +1074,7 @@
             document.getElementById('allOrdersSummary').classList.add('step-hidden');
             
             resetSteps();
+            setupMenuSteps();
             document.getElementById('step1').scrollIntoView({ behavior: 'smooth' });
         }
 
@@ -915,18 +1094,27 @@
                 let orderPrice = 5.00;
                 let dishDescription = '';
                 
-                if (order.dishType === 'pabellon') {
-                    orderPrice = 5.00;
+                if (order.dishType === 'dulce-maracuya') {
+                    orderPrice = 2.00 * order.quantity;
                     dishDescription = `
-                        <p><strong>🇻🇪</strong> Pabellón Criollo Venezolano</p>
+                        <p><strong>🥭</strong> ${order.quantity}x Dulce de Maracuyá (Parchita)</p>
+                        <p><strong>🍯</strong> Postre casero artesanal</p>
+                        ${order.quantity > 1 ? `<p><strong>💰</strong> ${order.quantity} x $2.00 = ${orderPrice.toFixed(2)}</p>` : `<p><strong>💰</strong> ${orderPrice.toFixed(2)}</p>`}
+                    `;
+                } else if (order.dishType === 'pabellon') {
+                    orderPrice = 5.00 * order.quantity;
+                    dishDescription = `
+                        <p><strong>🇻🇪</strong> ${order.quantity}x Pabellón Criollo Venezolano</p>
                         <p><strong>🍽️</strong> Arroz, carne mechada, caraotas (frijoles negros) y tajadas</p>
+                        ${order.quantity > 1 ? `<p><strong>💰</strong> ${order.quantity} x $5.00 = ${orderPrice.toFixed(2)}</p>` : `<p><strong>💰</strong> ${orderPrice.toFixed(2)}</p>`}
                     `;
                 } else if (order.dishType === 'hallaca') {
                     if (order.hallacaOption === 'individual') {
-                        orderPrice = 3.00;
+                        orderPrice = 3.00 * order.quantity;
                         dishDescription = `
-                            <p><strong>🫔</strong> Hallaca Venezolana Individual</p>
+                            <p><strong>🫔</strong> ${order.quantity}x Hallaca${order.quantity > 1 ? 's' : ''} Venezolana${order.quantity > 1 ? 's' : ''} Individual${order.quantity > 1 ? 'es' : ''}</p>
                             <p><strong>🍽️</strong> Masa de maíz rellena con guiso, envuelta en hoja de plátano</p>
+                            ${order.quantity > 1 ? `<p><strong>💰</strong> ${order.quantity} x $3.00 = ${orderPrice.toFixed(2)}</p>` : `<p><strong>💰</strong> ${orderPrice.toFixed(2)}</p>`}
                         `;
                     } else {
                         orderPrice = order.hallacaQuantity * 2.50;
@@ -937,15 +1125,16 @@
                         `;
                     }
                 } else {
-                    orderPrice = 5.00;
+                    orderPrice = 5.00 * order.quantity;
                     const proteinText = order.protein === 'pollo' ? 'Milanesa de Pollo' : 'Milanesa de Carne';
                     const sideText = order.side === 'pure' ? 'Puré de Papa' : 'Arroz';
                     
                     dishDescription = `
-                        <p><strong>🍖</strong> ${proteinText}</p>
+                        <p><strong>🍖</strong> ${order.quantity}x ${proteinText}</p>
                         <p><strong>🍽️</strong> ${sideText}</p>
                         <p><strong>🥗</strong> ${order.ensalada ? 'Con ensalada' : 'Sin ensalada'}</p>
                         <p><strong>🍌</strong> ${order.tajada ? 'Con tajada' : 'Sin tajada'}</p>
+                        ${order.quantity > 1 ? `<p><strong>💰</strong> ${order.quantity} x $5.00 = ${orderPrice.toFixed(2)}</p>` : `<p><strong>💰</strong> ${orderPrice.toFixed(2)}</p>`}
                     `;
                 }
                 
@@ -955,7 +1144,6 @@
                     <div class="order-item">
                         <h4>Pedido ${index + 1} - ${order.forWho}</h4>
                         ${dishDescription}
-                        ${order.dishType !== 'hallaca' || order.hallacaOption === 'individual' ? `<p><strong>💰</strong> ${orderPrice.toFixed(2)}</p>` : ''}
                     </div>
                 `;
             });
@@ -1004,35 +1192,55 @@
                 
                 message += `\n*Pedido ${index + 1} - ${order.forWho}:*\n`;
                 
-                if (order.dishType === 'pabellon') {
-                    orderPrice = 5.00;
-                    message += `🇻🇪 Pabellón Criollo Venezolano\n`;
+                if (order.dishType === 'dulce-maracuya') {
+                    orderPrice = 2.00 * order.quantity;
+                    message += `🥭 ${order.quantity}x Dulce de Maracuyá (Parchita)\n`;
+                    message += `🍯 Postre casero artesanal\n`;
+                    message += `💰 ${order.quantity} x $2.00 = ${orderPrice.toFixed(2)}\n`;
+                } else if (order.dishType === 'pabellon') {
+                    orderPrice = 5.00 * order.quantity;
+                    message += `🇻🇪 ${order.quantity}x Pabellón Criollo Venezolano\n`;
                     message += `🍽️ Arroz blanco, carne mechada, caraotas (frijoles negros) y tajadas\n`;
+                    if (order.quantity > 1) {
+                        message += `💰 ${order.quantity} x $5.00 = ${orderPrice.toFixed(2)}\n`;
+                    } else {
+                        message += `💰 ${orderPrice.toFixed(2)}\n`;
+                    }
                 } else if (order.dishType === 'hallaca') {
                     if (order.hallacaOption === 'individual') {
-                        orderPrice = 3.00;
-                        message += `🫔 Hallaca Venezolana Individual\n`;
+                        orderPrice = 3.00 * order.quantity;
+                        message += `🫔 ${order.quantity}x Hallaca${order.quantity > 1 ? 's' : ''} Venezolana${order.quantity > 1 ? 's' : ''} Individual${order.quantity > 1 ? 'es' : ''}\n`;
                         message += `🍽️ Masa de maíz rellena con guiso de carne, pollo, cerdo y aceitunas, envuelta en hoja de plátano\n`;
+                        if (order.quantity > 1) {
+                            message += `💰 ${order.quantity} x $3.00 = ${orderPrice.toFixed(2)}\n`;
+                        } else {
+                            message += `💰 ${orderPrice.toFixed(2)}\n`;
+                        }
                     } else {
                         orderPrice = order.hallacaQuantity * 2.50;
                         message += `🫔 ${order.hallacaQuantity} Hallacas Venezolanas (Por Mayor)\n`;
                         message += `🍽️ Masa de maíz rellena con guiso de carne, pollo, cerdo y aceitunas, envuelta en hoja de plátano\n`;
                         message += `📦 Cantidad: ${order.hallacaQuantity} unidades x $2.50\n`;
+                        message += `💰 ${orderPrice.toFixed(2)}\n`;
                     }
                 } else {
-                    orderPrice = 5.00;
+                    orderPrice = 5.00 * order.quantity;
                     const proteinText = order.protein === 'pollo' ? 'Milanesa de Pollo' : 'Milanesa de Carne';
                     const sideText = order.side === 'pure' ? 'Puré de Papa' : 'Arroz';
                     const ensaladaText = order.ensalada ? 'con ensalada' : 'sin ensalada';
                     const tajadaText = order.tajada ? 'con tajada' : 'sin tajada';
                     
-                    message += `🍖 ${proteinText}\n`;
+                    message += `🍖 ${order.quantity}x ${proteinText}\n`;
                     message += `🍽️ ${sideText}\n`;
                     message += `🥗 ${ensaladaText}\n`;
                     message += `🍌 ${tajadaText}\n`;
+                    if (order.quantity > 1) {
+                        message += `💰 ${order.quantity} x $5.00 = ${orderPrice.toFixed(2)}\n`;
+                    } else {
+                        message += `💰 ${orderPrice.toFixed(2)}\n`;
+                    }
                 }
                 
-                message += `💰 ${orderPrice.toFixed(2)}\n`;
                 total += orderPrice;
             });
             
@@ -1069,6 +1277,12 @@
             
             document.getElementById('forWhoInput').value = '';
             document.getElementById('hallacaQuantityInput').value = '10';
+            
+            // Remover botón continuar si existe
+            const continueBtn = document.querySelector('.continue-btn');
+            if (continueBtn) {
+                continueBtn.remove();
+            }
         }
 
         function goBack() {
@@ -1078,6 +1292,7 @@
                 side: '',
                 hallacaOption: '',
                 hallacaQuantity: 1,
+                quantity: 1,
                 ensalada: true,
                 tajada: true,
                 forWho: ''
@@ -1107,6 +1322,12 @@
             
             document.getElementById('forWhoInput').value = '';
             document.getElementById('hallacaQuantityInput').value = '10';
+            
+            // Remover botón continuar si existe
+            const continueBtn = document.querySelector('.continue-btn');
+            if (continueBtn) {
+                continueBtn.remove();
+            }
             
             document.getElementById('menuScreen').style.display = 'none';
             document.getElementById('welcomeScreen').classList.remove('hidden');
