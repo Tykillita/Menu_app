@@ -1265,10 +1265,8 @@
         function selectOrderType(type) {
             if (type === 'comida') {
                 isDessertMode = false;
-                setupMenuSteps(); // Configurar menú de comidas
             } else if (type === 'postre') {
                 isDessertMode = true;
-                setupMenuSteps(); // Configurar menú de postres
             }
             
             // Marcar opción seleccionada
@@ -1277,8 +1275,10 @@
             });
             event.target.classList.add('selected');
             
-            // Pequeña pausa visual y luego mostrar el menú correspondiente
+            // Resetear todos los pasos completamente
             setTimeout(() => {
+                resetSteps();
+                setupInitialMenuSteps(); // Usar la función inicial en lugar de setupMenuSteps
                 document.getElementById('step1').scrollIntoView({ behavior: 'smooth' });
             }, 300);
         }
@@ -1481,6 +1481,8 @@
             document.getElementById('step3').classList.add('step-hidden');
             document.getElementById('step4').classList.add('step-hidden');
             document.getElementById('customerForm').classList.add('step-hidden');
+            document.getElementById('orderSummary').classList.add('step-hidden');
+            document.getElementById('allOrdersSummary').classList.add('step-hidden');
             
             // Limpiar el contenedor temporal si existe
             const tempStep = document.getElementById('tempForWhoStep');
@@ -1489,29 +1491,59 @@
                 tempStep.innerHTML = '';
             }
             
-            document.querySelector('#step3 .step-title').textContent = 'Paso 3: Personaliza tu Plato (Opcional)';
-            document.querySelector('#step3 .extras-note p:first-child').textContent = '💡 Por defecto incluimos ensalada rallada y tajada';
-            document.querySelector('#step3 .extras-note p:last-child').textContent = 'Puedes quitarlas si no las quieres tocando los botones';
-            document.querySelector('#step4 .step-title').textContent = 'Paso 4: ¿Para quién es este pedido?';
+            // Resetear step2 completamente
+            const step2 = document.getElementById('step2');
+            step2.innerHTML = `
+                <h3 class="step-title">Paso 2: Elige tu Acompañamiento</h3>
+                <button class="option-btn" onclick="selectSide('pure')">🥔 Puré de Papa</button>
+                <button class="option-btn" onclick="selectSide('arroz')">🍚 Arroz</button>
+            `;
             
-            document.getElementById('tajadaBtn').style.display = 'block';
-            document.getElementById('ensaladaBtn').style.width = '';
+            // Resetear step3 completamente
+            const step3 = document.getElementById('step3');
+            step3.innerHTML = `
+                <h3 class="step-title">Paso 3: Personaliza tu Plato (Opcional)</h3>
+                <div class="extras-note">
+                    <p>💡 Por defecto incluimos ensalada rallada y tajada</p>
+                    <p>Puedes quitarlas si no las quieres tocando los botones</p>
+                </div>
+                <div class="extras-container">
+                    <div class="extra-option">
+                        <button class="toggle-btn active" id="ensaladaBtn" onclick="toggleExtra('ensalada')">
+                            🥗 Ensalada Rallada
+                        </button>
+                    </div>
+                    <div class="extra-option">
+                        <button class="toggle-btn active" id="tajadaBtn" onclick="toggleExtra('tajada')">
+                            🍌 Tajada
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            // Resetear step4 completamente
+            const step4 = document.getElementById('step4');
+            step4.innerHTML = `
+                <h3 class="step-title">Paso 4: ¿Para quién es este pedido?</h3>
+                <input type="text" id="forWhoInput" class="text-input" placeholder="Ej: Para María, Para Juan, Para mí..." maxlength="50">
+                <button class="btn" style="width: 100%; margin-top: 15px;" onclick="setOrderRecipient()">✅ Confirmar</button>
+            `;
             
             document.querySelectorAll('.option-btn').forEach(btn => {
                 btn.classList.remove('selected');
             });
             
-            document.getElementById('ensaladaBtn').classList.add('active');
-            document.getElementById('tajadaBtn').classList.add('active');
+            // Resetear el pedido actual
+            currentOrder.ensalada = true;
+            currentOrder.tajada = true;
+            currentOrder.quantity = 1;
             
-            document.getElementById('forWhoInput').value = '';
-            document.getElementById('hallacaQuantityInput').value = '10';
+            // Resetear inputs
+            const forWhoInput = document.getElementById('forWhoInput');
+            if (forWhoInput) forWhoInput.value = '';
             
-            // Remover botón continuar si existe
-            const continueBtn = document.querySelector('.continue-btn');
-            if (continueBtn) {
-                continueBtn.remove();
-            }
+            const hallacaInput = document.getElementById('hallacaQuantityInput');
+            if (hallacaInput) hallacaInput.value = '10';
         }
 
         function goBack() {
