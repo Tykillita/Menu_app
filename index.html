@@ -716,9 +716,47 @@
             
             // Resetear y configurar pasos según el modo
             resetSteps();
-            setupMenuSteps();
+            setupInitialMenuSteps();
         }
 
+        function setupInitialMenuSteps() {
+            const step1 = document.getElementById('step1');
+            const step1Title = step1.querySelector('.step-title');
+            
+            if (isDessertMode) {
+                step1Title.textContent = 'Paso 1: Elige tu Postre';
+                step1.innerHTML = `
+                    <h3 class="step-title">Paso 1: Elige tu Postre</h3>
+                    <button class="option-btn" onclick="selectDessert('dulce-maracuya')">
+                        🥭 Dulce de Maracuyá (Parchita)
+                        <div style="font-size: 0.9rem; color: #4ecdc4; margin-top: 8px; font-weight: bold;">
+                            💰 $2.00 cada uno
+                        </div>
+                    </button>
+                `;
+            } else {
+                step1Title.textContent = 'Paso 1: Elige tu Plato Principal';
+                step1.innerHTML = `
+                    <h3 class="step-title">Paso 1: Elige tu Plato Principal</h3>
+                    <button class="option-btn" onclick="selectDish('milanesa-pollo')">🐔 Milanesa de Pollo</button>
+                    <button class="option-btn" onclick="selectDish('milanesa-carne')">🥩 Milanesa de Carne</button>
+                    <button class="option-btn" onclick="selectDish('pabellon')" style="background: linear-gradient(45deg, rgba(255,193,7,0.1), rgba(220,53,69,0.1)); border: 1px solid rgba(255,193,7,0.3);">
+                        🇻🇪 Pabellón Criollo Venezolano
+                        <div style="font-size: 0.8rem; color: #ccc; margin-top: 5px;">
+                            Arroz, carne mechada, caraotas (frijoles negros) y tajadas
+                        </div>
+                    </button>
+                    <button class="option-btn" onclick="selectDish('hallaca')" style="background: linear-gradient(45deg, rgba(255,215,0,0.1), rgba(139,69,19,0.1)); border: 1px solid rgba(255,215,0,0.3);">
+                        🫔 Hallaca Venezolana
+                        <div style="font-size: 0.8rem; color: #ccc; margin-top: 5px;">
+                            Masa de maíz rellena con guiso, envuelta en hoja de plátano
+                        </div>
+                    </button>
+                `;
+            }
+        }
+
+        // Mantener setupMenuSteps() para cuando se agrega otro pedido
         function setupMenuSteps() {
             const step1 = document.getElementById('step1');
             const step1Title = step1.querySelector('.step-title');
@@ -781,17 +819,16 @@
             
             // Si es milanesa, usar un paso diferente (después de acompañamientos)
             if (currentOrder.dishType === 'milanesa-pollo' || currentOrder.dishType === 'milanesa-carne') {
-                // Crear un nuevo contenedor después del paso 3
                 targetContainer = document.getElementById('step4'); // Reutilizar step4 pero cambiar contenido
                 title = 'Paso 4: ¿Cuántos quieres?';
-            } else {
-                // Para otros platos, usar step2 como siempre
+            } else if (currentOrder.dishType === 'hallaca' && currentOrder.hallacaOption === 'individual') {
+                // Para hallacas individuales, es el paso 3 (después de elegir el tipo)
                 targetContainer = document.getElementById('step2');
-                
-                if (currentOrder.dishType === 'hallaca' && currentOrder.hallacaOption === 'individual') {
-                    maxQuantity = 9;
-                    title = 'Paso 2: ¿Cuántas Hallacas? (máximo 9)';
-                }
+                maxQuantity = 9;
+                title = 'Paso 3: ¿Cuántas Hallacas? (máximo 9)';
+            } else {
+                // Para otros platos (pabellón, postres), usar step2 como siempre
+                targetContainer = document.getElementById('step2');
             }
             
             targetContainer.innerHTML = `
@@ -869,8 +906,20 @@
 
         function confirmQuantity() {
             if (isDessertMode) {
+                // Para postres - ir al paso "para quién es"
                 setTimeout(() => {
-                    // Crear nuevo contenedor para "para quién es" los postres
+                    const step4 = document.getElementById('step4');
+                    step4.innerHTML = `
+                        <h3 class="step-title">Paso 3: ¿Para quién es este pedido?</h3>
+                        <input type="text" id="forWhoInput" class="text-input" placeholder="Ej: Para María, Para Juan, Para mí..." maxlength="50">
+                        <button class="btn" style="width: 100%; margin-top: 15px;" onclick="setOrderRecipient()">✅ Confirmar</button>
+                    `;
+                    step4.classList.remove('step-hidden');
+                    step4.scrollIntoView({ behavior: 'smooth' });
+                }, 300);
+            } else if (currentOrder.dishType === 'pabellon') {
+                // Para pabellón - ir directamente al paso "para quién es"
+                setTimeout(() => {
                     const step4 = document.getElementById('step4');
                     step4.innerHTML = `
                         <h3 class="step-title">Paso 3: ¿Para quién es este pedido?</h3>
@@ -881,6 +930,7 @@
                     step4.scrollIntoView({ behavior: 'smooth' });
                 }, 300);
             } else if (currentOrder.dishType === 'hallaca' && currentOrder.hallacaOption === 'individual') {
+                // Para hallacas individuales - ir al paso "para quién es"
                 setTimeout(() => {
                     const step4 = document.getElementById('step4');
                     step4.innerHTML = `
@@ -892,7 +942,7 @@
                     step4.scrollIntoView({ behavior: 'smooth' });
                 }, 300);
             } else if (currentOrder.dishType === 'milanesa-pollo' || currentOrder.dishType === 'milanesa-carne') {
-                // Para milanesas, crear un nuevo div temporal para "para quién es"
+                // Para milanesas - crear un contenedor temporal para "para quién es"
                 setTimeout(() => {
                     // Ocultar el selector de cantidad actual
                     document.getElementById('step4').classList.add('step-hidden');
@@ -932,7 +982,7 @@
             window.open('https://wa.me/50768257958', '_blank');
         }
 
-               function selectDish(dishType) {
+        function selectDish(dishType) {
             currentOrder.dishType = dishType;
             
             // Marcar opción seleccionada
@@ -942,28 +992,25 @@
             event.target.classList.add('selected');
             
             if (dishType === 'pabellon') {
-                // Para pabellón, saltar al paso 4 directamente (sin extras)
+                // Para pabellón, ir al selector de cantidad (paso 2)
                 currentOrder.protein = 'carne-mechada';
                 currentOrder.side = 'arroz-caraotas';
                 currentOrder.ensalada = false; // Pabellón no lleva ensalada
                 currentOrder.tajada = true; // Ya viene incluida
                 
                 setTimeout(() => {
-                    document.getElementById('step4').classList.remove('step-hidden');
-                    document.querySelector('#step4 .step-title').textContent = 'Paso 2: ¿Para quién es este pedido?';
-                    document.getElementById('step4').scrollIntoView({ behavior: 'smooth' });
+                    showQuantitySelector();
                 }, 300);
             } else if (dishType === 'hallaca') {
-                // Para hallaca, saltar al paso 4 directamente (es un plato completo)
+                // Para hallaca, ir al paso 2b (opciones de hallaca)
                 currentOrder.protein = 'hallaca-venezolana';
                 currentOrder.side = 'hallaca-completa';
                 currentOrder.ensalada = false; // Hallaca no lleva ensalada
                 currentOrder.tajada = false; // Hallaca no lleva tajada
                 
                 setTimeout(() => {
-                    document.getElementById('step4').classList.remove('step-hidden');
-                    document.querySelector('#step4 .step-title').textContent = 'Paso 2: ¿Para quién es este pedido?';
-                    document.getElementById('step4').scrollIntoView({ behavior: 'smooth' });
+                    document.getElementById('step2b').classList.remove('step-hidden');
+                    document.getElementById('step2b').scrollIntoView({ behavior: 'smooth' });
                 }, 300);
             } else {
                 // Para milanesas, mostrar paso 2 (acompañamiento)
@@ -989,7 +1036,7 @@
                 setTimeout(() => {
                     showQuantitySelector();
                 }, 300);
-            } else {
+            } else if (option === 'bulk') {
                 setTimeout(() => {
                     document.getElementById('step2c').classList.remove('step-hidden');
                     document.getElementById('step2c').scrollIntoView({ behavior: 'smooth' });
@@ -1006,10 +1053,16 @@
             
             currentOrder.hallacaQuantity = quantity;
             
+            // Para hallacas por mayor, ir directamente al "para quién es"
             setTimeout(() => {
-                document.getElementById('step4').classList.remove('step-hidden');
-                document.querySelector('#step4 .step-title').textContent = 'Paso 4: ¿Para quién es este pedido?';
-                document.getElementById('step4').scrollIntoView({ behavior: 'smooth' });
+                const step4 = document.getElementById('step4');
+                step4.innerHTML = `
+                    <h3 class="step-title">Paso 4: ¿Para quién es este pedido?</h3>
+                    <input type="text" id="forWhoInput" class="text-input" placeholder="Ej: Para María, Para Juan, Para mí..." maxlength="50">
+                    <button class="btn" style="width: 100%; margin-top: 15px;" onclick="setOrderRecipient()">✅ Confirmar</button>
+                `;
+                step4.classList.remove('step-hidden');
+                step4.scrollIntoView({ behavior: 'smooth' });
             }, 300);
         }
 
@@ -1147,8 +1200,10 @@
         }
 
         function addAnotherOrder() {
+            // Guardar el pedido actual
             allOrders.push({...currentOrder});
             
+            // Resetear el pedido actual
             currentOrder = {
                 dishType: '',
                 protein: '',
@@ -1161,12 +1216,88 @@
                 forWho: ''
             };
             
+            // Ocultar resúmenes
             document.getElementById('orderSummary').classList.add('step-hidden');
             document.getElementById('allOrdersSummary').classList.add('step-hidden');
             
+            // Mostrar selector de tipo de pedido
+            showOrderTypeSelector();
+        }
+
+        function showOrderTypeSelector() {
+            // Usar el step1 para mostrar las opciones
+            const step1 = document.getElementById('step1');
+            
+            step1.innerHTML = `
+                <h3 class="step-title">¿Qué tipo de pedido quieres agregar?</h3>
+                <p style="color: #ccc; margin-bottom: 20px; text-align: center;">
+                    Elige el tipo de pedido que quieres hacer
+                </p>
+                
+                <button class="option-btn" onclick="selectOrderType('comida')" 
+                        style="background: linear-gradient(45deg, rgba(34,139,34,0.1), rgba(46,205,196,0.1)); border: 1px solid rgba(34,139,34,0.3);">
+                    🍽️ Comida de la Semana
+                    <div style="font-size: 0.8rem; color: #ccc; margin-top: 5px;">
+                        Milanesas, Pabellón, Hallacas
+                    </div>
+                </button>
+                
+                <button class="option-btn" onclick="selectOrderType('postre')"
+                        style="background: linear-gradient(45deg, rgba(255,182,193,0.1), rgba(255,218,185,0.1)); border: 1px solid rgba(255,182,193,0.3);">
+                    🍰 Postres
+                    <div style="font-size: 0.8rem; color: #ccc; margin-top: 5px;">
+                        Dulces caseros artesanales
+                    </div>
+                </button>
+                
+                <button class="btn btn-secondary" onclick="cancelAddOrder()" style="width: 100%; margin-top: 20px;">
+                    ⬅️ Volver al Resumen
+                </button>
+            `;
+            
+            // Ocultar otros pasos
             resetSteps();
-            setupMenuSteps();
-            document.getElementById('step1').scrollIntoView({ behavior: 'smooth' });
+            
+            // Mostrar step1 y hacer scroll
+            step1.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function selectOrderType(type) {
+            if (type === 'comida') {
+                isDessertMode = false;
+                setupMenuSteps(); // Configurar menú de comidas
+            } else if (type === 'postre') {
+                isDessertMode = true;
+                setupMenuSteps(); // Configurar menú de postres
+            }
+            
+            // Marcar opción seleccionada
+            document.querySelectorAll('#step1 .option-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            event.target.classList.add('selected');
+            
+            // Pequeña pausa visual y luego mostrar el menú correspondiente
+            setTimeout(() => {
+                document.getElementById('step1').scrollIntoView({ behavior: 'smooth' });
+            }, 300);
+        }
+
+        function cancelAddOrder() {
+            // Remover el último pedido agregado y volver al estado anterior
+            allOrders.pop();
+            
+            // Si hay pedidos, mostrar resumen de todos
+            if (allOrders.length > 0) {
+                showAllOrdersSummary();
+            } else {
+                // Si no hay pedidos, mostrar resumen del pedido actual
+                // Restaurar el pedido actual (el último que se había guardado)
+                if (allOrders.length === 0) {
+                    // Volver al resumen individual
+                    showOrderSummary();
+                }
+            }
         }
 
         function proceedToCheckout() {
