@@ -435,7 +435,9 @@
             <h1 class="welcome-title">La Cocina de Anita</h1>
             <p class="welcome-subtitle">Comida casera con amor</p>
             
+            
             <button class="btn" onclick="openMenu()">🍽️ Ver Menú de la Semana</button>
+            <button class="btn" onclick="openSauceMenu()">🍝 Ver Menú de Salsas Congeladas</button>
             <button class="btn" onclick="openDessertMenu()">🍰 Ver Menú de Postres</button>
             <button class="btn btn-secondary" onclick="closeApp()">❌ Cerrar</button>
             
@@ -466,8 +468,8 @@
             <!-- Paso 1: Tipo de Plato -->
             <div id="step1" class="step-container">
                 <h3 class="step-title">Paso 1: Elige tu Plato Principal</h3>
-                <button class="option-btn" onclick="selectDish('milanesa-pollo')">🐔 Milanesa de Pollo</button>
-                <button class="option-btn" onclick="selectDish('milanesa-carne')">🥩 Milanesa de Carne</button>
+            <!--<button class="option-btn" onclick="selectDish('milanesa-pollo')">🐔 Milanesa de Pollo</button>
+                <button class="option-btn" onclick="selectDish('milanesa-carne')">🥩 Milanesa de Carne</button> -->
                 <button class="option-btn" onclick="selectDish('pabellon')" style="background: linear-gradient(45deg, rgba(255,193,7,0.1), rgba(220,53,69,0.1)); border: 1px solid rgba(255,193,7,0.3);">
                     🇻🇪 Pabellón Criollo Venezolano
                     <div style="font-size: 0.8rem; color: #ccc; margin-top: 5px;">
@@ -691,19 +693,28 @@
         
         let allOrders = [];
         let isDessertMode = false;
+        let isSauceMode = false;
         let customerData = {
             name: '',
             phone: '',
             address: ''
         };
 
+        function openSauceMenu() {
+            isDessertMode = false;
+            isSauceMode = true;
+            showMenuScreen('🍝 Menú de Salsas Congeladas', 'Salsas artesanales congeladas listas para calentar');
+        }
+
         function openMenu() {
             isDessertMode = false;
+            isSauceMode = false;
             showMenuScreen('🍽️ Arma tu Comida', 'Selecciona tus opciones paso a paso');
         }
 
         function openDessertMenu() {
             isDessertMode = true;
+            isSauceMode = false;
             showMenuScreen('🍰 Menú de Postres', 'Endulza tu día con nuestros postres caseros');
         }
 
@@ -722,8 +733,41 @@
         function setupInitialMenuSteps() {
             const step1 = document.getElementById('step1');
             const step1Title = step1.querySelector('.step-title');
+
+            if (isSauceMode) {
+                step1Title.textContent = 'Paso 1: Elige tu Salsa';
+                step1.innerHTML = `
+                    <h3 class="step-title">Paso 1: Elige tu Salsa</h3>
+                    <button class="option-btn" onclick="selectSauce('bolognesa')" style="background: linear-gradient(45deg, rgba(139,69,19,0.1), rgba(160,82,45,0.1)); border: 1px solid rgba(139,69,19,0.3);">
+                        🍝 Salsa Bolognesa
+                        <div style="font-size: 0.8rem; color: #ccc; margin-top: 5px;">
+                            Salsa clásica con carne molida y tomate (24 oz)
+                        </div>
+                        <div style="font-size: 0.9rem; color: #4ecdc4; margin-top: 8px; font-weight: bold;">
+                            💰 $5.00 cada una
+                        </div>
+                    </button>
+                    <button class="option-btn" onclick="selectSauce('napoli')" style="background: linear-gradient(45deg, rgba(220,20,60,0.1), rgba(255,69,0,0.1)); border: 1px solid rgba(220,20,60,0.3);">
+                        🍅 Salsa Napoli
+                        <div style="font-size: 0.8rem; color: #ccc; margin-top: 5px;">
+                            Salsa tradicional italiana de tomate (24 oz)
+                        </div>
+                        <div style="font-size: 0.9rem; color: #4ecdc4; margin-top: 8px; font-weight: bold;">
+                            💰 $5.00 cada una
+                        </div>
+                    </button>
+                    <button class="option-btn" onclick="selectSauce('costilla')" style="background: linear-gradient(45deg, rgba(101,67,33,0.1), rgba(139,90,43,0.1)); border: 1px solid rgba(101,67,33,0.3);">
+                        🥩 Salsa de Costilla de Cerdo
+                        <div style="font-size: 0.8rem; color: #ccc; margin-top: 5px;">
+                            Salsa rica en sabor con costilla de cerdo (24 oz)
+                        </div>
+                        <div style="font-size: 0.9rem; color: #4ecdc4; margin-top: 8px; font-weight: bold;">
+                            💰 $5.00 cada una
+                        </div>
+                    </button>
+                `;
             
-            if (isDessertMode) {
+            } else if (isDessertMode) {
                 step1Title.textContent = 'Paso 1: Elige tu Postre';
                 step1.innerHTML = `
                     <h3 class="step-title">Paso 1: Elige tu Postre</h3>
@@ -733,13 +777,25 @@
                             💰 $2.00 cada uno
                         </div>
                     </button>
+                    <button class="option-btn" onclick="selectDessert('dulce-limon')">
+                        🍋 Dulce de Limón
+                        <div style="font-size: 0.9rem; color: #4ecdc4; margin-top: 8px; font-weight: bold;">
+                            💰 $2.00 cada uno
+                        </div>
+                    </button>
                 `;
             } else {
                 step1Title.textContent = 'Paso 1: Elige tu Plato Principal';
                 step1.innerHTML = `
                     <h3 class="step-title">Paso 1: Elige tu Plato Principal</h3>
-                    <button class="option-btn" onclick="selectDish('milanesa-pollo')">🐔 Milanesa de Pollo</button>
-                    <button class="option-btn" onclick="selectDish('milanesa-carne')">🥩 Milanesa de Carne</button>
+                <!--<button class="option-btn" onclick="selectDish('milanesa-pollo')">🐔 Milanesa de Pollo <div><div> (NO DISPONIBLE) </button>
+                    <button class="option-btn" onclick="selectDish('milanesa-carne')">🥩 Milanesa de Carne <div><div> (NO DISPONIBLE) </button> -->
+                    <button class="option-btn" onclick="selectDish('pasta-linguini')" style="background: linear-gradient(45deg, rgba(139,69,19,0.1), rgba(160,82,45,0.1)); border: 1px solid rgba(139,69,19,0.3);">
+                        🍝 Pasta Linguini a la Bolognesa
+                        <div style="font-size: 0.8rem; color: #ccc; margin-top: 5px;">
+                            Pasta linguini, salsa bolognesa, pan de ajo y tajada
+                        </div>
+                    </button>
                     <button class="option-btn" onclick="selectDish('pabellon')" style="background: linear-gradient(45deg, rgba(255,193,7,0.1), rgba(220,53,69,0.1)); border: 1px solid rgba(255,193,7,0.3);">
                         🇻🇪 Pabellón Criollo Venezolano
                         <div style="font-size: 0.8rem; color: #ccc; margin-top: 5px;">
@@ -771,13 +827,25 @@
                             💰 $2.00 cada uno
                         </div>
                     </button>
+                    <button class="option-btn" onclick="selectDessert('dulce-limon')">
+                        🍋 Dulce de Limón
+                        <div style="font-size: 0.9rem; color: #4ecdc4; margin-top: 8px; font-weight: bold;">
+                            💰 $2.00 cada uno
+                        </div>
+                    </button>
                 `;
             } else {
                 step1Title.textContent = 'Paso 1: Elige tu Plato Principal';
                 step1.innerHTML = `
                     <h3 class="step-title">Paso 1: Elige tu Plato Principal</h3>
-                    <button class="option-btn" onclick="selectDish('milanesa-pollo')">🐔 Milanesa de Pollo</button>
-                    <button class="option-btn" onclick="selectDish('milanesa-carne')">🥩 Milanesa de Carne</button>
+                <!--<button class="option-btn" onclick="selectDish('milanesa-pollo')">🐔 Milanesa de Pollo</button>
+                    <button class="option-btn" onclick="selectDish('milanesa-carne')">🥩 Milanesa de Carne</button> -->
+                    <button class="option-btn" onclick="selectDish('pasta-linguini')" style="background: linear-gradient(45deg, rgba(139,69,19,0.1), rgba(160,82,45,0.1)); border: 1px solid rgba(139,69,19,0.3);">
+                        🍝 Pasta Linguini a la Bolognesa
+                        <div style="font-size: 0.8rem; color: #ccc; margin-top: 5px;">
+                            Pasta linguini, salsa bolognesa, pan de ajo y tajada
+                        </div>
+                    </button>
                     <button class="option-btn" onclick="selectDish('pabellon')" style="background: linear-gradient(45deg, rgba(255,193,7,0.1), rgba(220,53,69,0.1)); border: 1px solid rgba(255,193,7,0.3);">
                         🇻🇪 Pabellón Criollo Venezolano
                         <div style="font-size: 0.8rem; color: #ccc; margin-top: 5px;">
@@ -794,9 +862,26 @@
             }
         }
 
+        function selectSauce(sauceType) {
+            currentOrder.dishType = sauceType;
+            currentOrder.protein = sauceType + '-sauce';
+            currentOrder.side = 'salsa-congelada-24oz';
+            currentOrder.ensalada = false;
+            currentOrder.tajada = false;
+            
+            document.querySelectorAll('#step1 .option-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            event.target.classList.add('selected');
+            
+            setTimeout(() => {
+                showQuantitySelector();
+            }, 300);
+        }
+
         function selectDessert(dessertType) {
             currentOrder.dishType = dessertType;
-            currentOrder.protein = 'dulce-maracuya';
+            currentOrder.protein = dessertType === 'dulce-maracuya' ? 'dulce-maracuya' : 'dulce-limon';
             currentOrder.side = 'postre-casero';
             currentOrder.ensalada = false;
             currentOrder.tajada = false;
@@ -852,15 +937,17 @@
         }
 
         function getCurrentPrice() {
+            if (isSauceMode) return 5.00;
             if (isDessertMode) return 2.00;
             if (currentOrder.dishType === 'hallaca' && currentOrder.hallacaOption === 'individual') return 3.00;
             if (currentOrder.dishType === 'hallaca' && currentOrder.hallacaOption === 'bulk') return 2.50;
             if (currentOrder.dishType === 'pabellon') return 5.00;
+            if (currentOrder.dishType === 'pasta-linguini') return 4.00;
             return 5.00; // milanesas
         }
 
         function changeQuantity(change) {
-            let maxQuantity = 20;
+            let maxQuantity = 100;
             
             if (currentOrder.dishType === 'hallaca' && currentOrder.hallacaOption === 'individual') {
                 maxQuantity = 9;
@@ -890,6 +977,15 @@
                         priceDisplay = step4.querySelector('#quantityPrice');
                     }
                 }
+
+                // Si no está en step4, buscar en step2c (para hallacas individuales)
+                if (!quantityDisplay) {
+                    const step2c = document.getElementById('step2c');
+                    if (!step2c.classList.contains('step-hidden')) {
+                        quantityDisplay = step2c.querySelector('div[style*="font-size: 2rem"]');
+                        priceDisplay = step2c.querySelector('#quantityPrice');
+                    }
+                }
                 
                 // Actualizar display de cantidad
                 if (quantityDisplay) {
@@ -905,7 +1001,19 @@
         }
 
         function confirmQuantity() {
-            if (isDessertMode) {
+            if (isSauceMode) {
+                // Para salsas - ir al paso "para quién es"
+                setTimeout(() => {
+                    const step4 = document.getElementById('step4');
+                    step4.innerHTML = `
+                        <h3 class="step-title">Paso 3: ¿Para quién es este pedido?</h3>
+                        <input type="text" id="forWhoInput" class="text-input" placeholder="Ej: Para María, Para Juan, Para mí..." maxlength="50">
+                        <button class="btn" style="width: 100%; margin-top: 15px;" onclick="setOrderRecipient()">✅ Confirmar</button>
+                    `;
+                    step4.classList.remove('step-hidden');
+                    step4.scrollIntoView({ behavior: 'smooth' });
+                }, 300);
+            } else if (isDessertMode) {
                 // Para postres - ir al paso "para quién es"
                 setTimeout(() => {
                     const step4 = document.getElementById('step4');
@@ -919,6 +1027,30 @@
                 }, 300);
             } else if (currentOrder.dishType === 'pabellon') {
                 // Para pabellón - ir directamente al paso "para quién es"
+                setTimeout(() => {
+                    const step4 = document.getElementById('step4');
+                    step4.innerHTML = `
+                        <h3 class="step-title">Paso 3: ¿Para quién es este pedido?</h3>
+                        <input type="text" id="forWhoInput" class="text-input" placeholder="Ej: Para María, Para Juan, Para mí..." maxlength="50">
+                        <button class="btn" style="width: 100%; margin-top: 15px;" onclick="setOrderRecipient()">✅ Confirmar</button>
+                    `;
+                    step4.classList.remove('step-hidden');
+                    step4.scrollIntoView({ behavior: 'smooth' });
+                }, 300);
+            } else if (currentOrder.dishType === 'pasta-linguini') {
+                // Para pasta linguini - ir directamente al paso "para quién es"
+                setTimeout(() => {
+                    const step4 = document.getElementById('step4');
+                    step4.innerHTML = `
+                        <h3 class="step-title">Paso 3: ¿Para quién es este pedido?</h3>
+                        <input type="text" id="forWhoInput" class="text-input" placeholder="Ej: Para María, Para Juan, Para mí..." maxlength="50">
+                        <button class="btn" style="width: 100%; margin-top: 15px;" onclick="setOrderRecipient()">✅ Confirmar</button>
+                    `;
+                    step4.classList.remove('step-hidden');
+                    step4.scrollIntoView({ behavior: 'smooth' });
+                }, 300);
+            } else if (currentOrder.dishType === 'dulce-limon') {
+                // Para dulce de limón - ir al paso "para quién es"
                 setTimeout(() => {
                     const step4 = document.getElementById('step4');
                     step4.innerHTML = `
@@ -966,7 +1098,7 @@
                     tempStep.scrollIntoView({ behavior: 'smooth' });
                 }, 300);
             }
-        }
+            }
 
         function closeApp() {
             if (confirm('¿Estás seguro de que quieres cerrar la aplicación?')) {
@@ -1001,6 +1133,7 @@
                 setTimeout(() => {
                     showQuantitySelector();
                 }, 300);
+
             } else if (dishType === 'hallaca') {
                 // Para hallaca, ir al paso 2b (opciones de hallaca)
                 currentOrder.protein = 'hallaca-venezolana';
@@ -1012,9 +1145,19 @@
                     document.getElementById('step2b').classList.remove('step-hidden');
                     document.getElementById('step2b').scrollIntoView({ behavior: 'smooth' });
                 }, 300);
-            } else {
-                // Para milanesas, mostrar paso 2 (acompañamiento)
-                currentOrder.protein = dishType === 'milanesa-pollo' ? 'pollo' : 'carne';
+            } else if (dishType === 'pasta-linguini') {
+                    // Para pasta linguini, ir al selector de cantidad (sin acompañamientos)
+                    currentOrder.protein = 'pasta-linguini';
+                    currentOrder.side = 'pasta-completa';
+                    currentOrder.ensalada = false; // Pasta no lleva ensalada
+                    currentOrder.tajada = true; // Ya viene incluida
+                    
+                    setTimeout(() => {
+                        showQuantitySelector();
+                    }, 300);
+                } else {
+                    // Para milanesas, mostrar paso 2 (acompañamiento)
+                    currentOrder.protein = dishType === 'milanesa-pollo' ? 'pollo' : 'carne';
                 
                 setTimeout(() => {
                     document.getElementById('step2').classList.remove('step-hidden');
@@ -1034,7 +1177,25 @@
             if (option === 'individual') {
                 currentOrder.hallacaQuantity = 1;
                 setTimeout(() => {
-                    showQuantitySelector();
+                    // Para hallacas individuales, crear el selector de cantidad en step2c (paso 3)
+                    const step2c = document.getElementById('step2c');
+                    step2c.innerHTML = `
+                        <h3 class="step-title">Paso 3: ¿Cuántas Hallacas? (máximo 9)</h3>
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 20px; margin: 20px 0;">
+                            <button class="btn" onclick="changeQuantity(-1)" style="width: 60px; height: 60px; font-size: 1.5rem;">➖</button>
+                            <div style="text-align: center;">
+                                <div style="font-size: 2rem; font-weight: bold; color: #4ecdc4;">${currentOrder.quantity}</div>
+                                <div style="color: #ccc; margin-top: 5px;">unidades</div>
+                            </div>
+                            <button class="btn" onclick="changeQuantity(1)" style="width: 60px; height: 60px; font-size: 1.5rem;">➕</button>
+                        </div>
+                        <div class="price-display">
+                            <strong style="font-size: 1.2rem; color: #4ecdc4;" id="quantityPrice">💰 Total: ${(3.00 * currentOrder.quantity).toFixed(2)}</strong>
+                        </div>
+                        <button class="btn" style="width: 100%; margin-top: 15px;" onclick="confirmQuantity()">✅ Confirmar Cantidad</button>
+                    `;
+                    step2c.classList.remove('step-hidden');
+                    step2c.scrollIntoView({ behavior: 'smooth' });
                 }, 300);
             } else if (option === 'bulk') {
                 setTimeout(() => {
@@ -1128,7 +1289,17 @@
             let priceText = '$5.00';
             let totalPrice = 5.00;
             
-            if (isDessertMode) {
+            if (isSauceMode) {
+                const sauceNames = {
+                    'bolognesa': 'Salsa Bolognesa',
+                    'napoli': 'Salsa Napoli', 
+                    'costilla': 'Salsa de Costilla de Cerdo'
+                };
+                proteinText = `${currentOrder.quantity}x ${sauceNames[currentOrder.dishType]}`;
+                sideText = 'Salsa artesanal congelada de 24 onzas, lista para calentar';
+                totalPrice = 5.00 * currentOrder.quantity;
+                priceText = currentOrder.quantity > 1 ? `${totalPrice.toFixed(2)} (${currentOrder.quantity} x $5.00)` : '$5.00';
+            } else if (isDessertMode) {
                 proteinText = `${currentOrder.quantity}x Dulce de Maracuyá (Parchita)`;
                 sideText = 'Postre casero artesanal';
                 totalPrice = 2.00 * currentOrder.quantity;
@@ -1138,6 +1309,21 @@
                 sideText = 'Arroz blanco, carne mechada, caraotas (frijoles negros) y tajadas de plátano';
                 totalPrice = 5.00 * currentOrder.quantity;
                 priceText = currentOrder.quantity > 1 ? `${totalPrice.toFixed(2)} (${currentOrder.quantity} x $5.00)` : '$5.00';
+            } else if (currentOrder.dishType === 'pasta-linguini') {
+                proteinText = `${currentOrder.quantity}x Pasta Linguini a la Bolognesa`;
+                sideText = 'Pasta linguini con salsa bolognesa, pan de ajo y tajada de plátano';
+                totalPrice = 4.00 * currentOrder.quantity;
+                priceText = currentOrder.quantity > 1 ? `${totalPrice.toFixed(2)} (${currentOrder.quantity} x $4.00)` : '$4.00';
+            } else if (currentOrder.dishType === 'pasta-linguini') {
+                proteinText = `${currentOrder.quantity}x Pasta Linguini a la Bolognesa`;
+                sideText = 'Pasta linguini con salsa bolognesa, pan de ajo y tajada de plátano';
+                totalPrice = 4.00 * currentOrder.quantity;
+                priceText = currentOrder.quantity > 1 ? `${totalPrice.toFixed(2)} (${currentOrder.quantity} x $4.00)` : '$4.00';
+            } else if (currentOrder.dishType === 'dulce-limon') {
+                proteinText = `${currentOrder.quantity}x Dulce de Limón`;
+                sideText = 'Postre casero artesanal';
+                totalPrice = 2.00 * currentOrder.quantity;
+                priceText = `${totalPrice.toFixed(2)} (${currentOrder.quantity} x $2.00)`;
             } else if (currentOrder.dishType === 'hallaca') {
                 if (currentOrder.hallacaOption === 'individual') {
                     proteinText = `${currentOrder.quantity}x Hallaca${currentOrder.quantity > 1 ? 's' : ''} Venezolana${currentOrder.quantity > 1 ? 's' : ''} Individual${currentOrder.quantity > 1 ? 'es' : ''}`;
@@ -1156,19 +1342,25 @@
                 sideText = currentOrder.side === 'pure' ? 'Puré de Papa' : 'Arroz';
                 totalPrice = 5.00 * currentOrder.quantity;
                 priceText = currentOrder.quantity > 1 ? `${totalPrice.toFixed(2)} (${currentOrder.quantity} x $5.00)` : '$5.00';
-            }
+            }            
             
             let summaryHTML = `
                 <div class="summary-item">
                     <strong>👤 Para:</strong> ${currentOrder.forWho}
                 </div>
                 <div class="summary-item">
-                    <strong>🍽️ ${isDessertMode ? 'Postre' : 'Plato'}:</strong> ${proteinText}
+                    <strong>🍽️ ${isSauceMode ? 'Salsa' : (isDessertMode ? 'Postre' : 'Plato')}:</strong> ${proteinText}
                 </div>
             `;
-            
-            if (!isDessertMode) {
-                if (currentOrder.dishType !== 'pabellon' && currentOrder.dishType !== 'hallaca') {
+
+            if (isSauceMode) {
+                summaryHTML += `
+                    <div class="summary-item">
+                        <strong>🍝 Descripción:</strong> ${sideText}
+                    </div>
+                `;
+            } else if (!isDessertMode) {
+                if (currentOrder.dishType !== 'pabellon' && currentOrder.dishType !== 'hallaca' && currentOrder.dishType !== 'pasta-linguini') {
                     summaryHTML += `
                         <div class="summary-item">
                             <strong>🍽️ Acompañamiento:</strong> ${sideText}
@@ -1197,7 +1389,7 @@
             
             document.getElementById('summaryContent').innerHTML = summaryHTML;
             document.querySelector('.price-display strong').innerHTML = `💰 Precio: ${priceText}`;
-        }
+            }
 
         function addAnotherOrder() {
             // Guardar el pedido actual
@@ -1225,7 +1417,6 @@
         }
 
         function showOrderTypeSelector() {
-            // Usar el step1 para mostrar las opciones
             const step1 = document.getElementById('step1');
             
             step1.innerHTML = `
@@ -1238,7 +1429,7 @@
                         style="background: linear-gradient(45deg, rgba(34,139,34,0.1), rgba(46,205,196,0.1)); border: 1px solid rgba(34,139,34,0.3);">
                     🍽️ Comida de la Semana
                     <div style="font-size: 0.8rem; color: #ccc; margin-top: 5px;">
-                        Milanesas, Pabellón, Hallacas
+                        Pastas, Pabellón, Hallacas y más
                     </div>
                 </button>
                 
@@ -1247,6 +1438,14 @@
                     🍰 Postres
                     <div style="font-size: 0.8rem; color: #ccc; margin-top: 5px;">
                         Dulces caseros artesanales
+                    </div>
+                </button>
+                
+                <button class="option-btn" onclick="selectOrderType('salsa')"
+                        style="background: linear-gradient(45deg, rgba(139,69,19,0.1), rgba(160,82,45,0.1)); border: 1px solid rgba(139,69,19,0.3);">
+                    🍝 Salsas Congeladas
+                    <div style="font-size: 0.8rem; color: #ccc; margin-top: 5px;">
+                        Salsas artesanales congeladas (24 oz)
                     </div>
                 </button>
                 
@@ -1265,8 +1464,13 @@
         function selectOrderType(type) {
             if (type === 'comida') {
                 isDessertMode = false;
+                isSauceMode = false;
             } else if (type === 'postre') {
                 isDessertMode = true;
+                isSauceMode = false;
+            } else if (type === 'salsa') {
+                isDessertMode = false;
+                isSauceMode = true;
             }
             
             // Marcar opción seleccionada
@@ -1316,12 +1520,38 @@
                 let orderPrice = 5.00;
                 let dishDescription = '';
                 
-                if (order.dishType === 'dulce-maracuya') {
+                if (order.dishType === 'bolognesa' || order.dishType === 'napoli' || order.dishType === 'costilla') {
+                    const sauceNames = {
+                        'bolognesa': 'Salsa Bolognesa',
+                        'napoli': 'Salsa Napoli', 
+                        'costilla': 'Salsa de Costilla de Cerdo'
+                    };
+                    orderPrice = 5.00 * order.quantity;
+                    dishDescription = `
+                        <p><strong>🍝</strong> ${order.quantity}x ${sauceNames[order.dishType]}</p>
+                        <p><strong>🍽️</strong> Salsa artesanal congelada de 24 onzas, lista para calentar</p>
+                        ${order.quantity > 1 ? `<p><strong>💰</strong> ${order.quantity} x $5.00 = ${orderPrice.toFixed(2)}</p>` : `<p><strong>💰</strong> ${orderPrice.toFixed(2)}</p>`}
+                    `;
+                } else if (order.dishType === 'dulce-maracuya') {
                     orderPrice = 2.00 * order.quantity;
                     dishDescription = `
                         <p><strong>🥭</strong> ${order.quantity}x Dulce de Maracuyá (Parchita)</p>
                         <p><strong>🍯</strong> Postre casero artesanal</p>
                         ${order.quantity > 1 ? `<p><strong>💰</strong> ${order.quantity} x $2.00 = ${orderPrice.toFixed(2)}</p>` : `<p><strong>💰</strong> ${orderPrice.toFixed(2)}</p>`}
+                    `;
+                } else if (order.dishType === 'dulce-limon') {
+                    orderPrice = 2.00 * order.quantity;
+                    dishDescription = `
+                        <p><strong>🍋</strong> ${order.quantity}x Dulce de Limón</p>
+                        <p><strong>🍯</strong> Postre casero artesanal</p>
+                        ${order.quantity > 1 ? `<p><strong>💰</strong> ${order.quantity} x $2.00 = ${orderPrice.toFixed(2)}</p>` : `<p><strong>💰</strong> ${orderPrice.toFixed(2)}</p>`}
+                    `;
+                } else if (order.dishType === 'pasta-linguini') {
+                    orderPrice = 4.00 * order.quantity;
+                    dishDescription = `
+                        <p><strong>🍝</strong> ${order.quantity}x Pasta Linguini a la Bolognesa</p>
+                        <p><strong>🍽️</strong> Pasta linguini con salsa bolognesa, pan de ajo y tajada</p>
+                        ${order.quantity > 1 ? `<p><strong>💰</strong> ${order.quantity} x $4.00 = ${orderPrice.toFixed(2)}</p>` : `<p><strong>💰</strong> ${orderPrice.toFixed(2)}</p>`}
                     `;
                 } else if (order.dishType === 'pabellon') {
                     orderPrice = 5.00 * order.quantity;
@@ -1376,7 +1606,7 @@
             setTimeout(() => {
                 document.getElementById('allOrdersSummary').scrollIntoView({ behavior: 'smooth' });
             }, 300);
-        }
+            }
 
         function showCustomerForm() {
             document.getElementById('allOrdersSummary').classList.add('step-hidden');
@@ -1419,6 +1649,20 @@
                     message += `🥭 ${order.quantity}x Dulce de Maracuyá (Parchita)\n`;
                     message += `🍯 Postre casero artesanal\n`;
                     message += `💰 ${order.quantity} x $2.00 = ${orderPrice.toFixed(2)}\n`;
+                } else if (order.dishType === 'dulce-limon') {
+                    orderPrice = 2.00 * order.quantity;
+                    message += `🍋 ${order.quantity}x Dulce de Limón\n`;
+                    message += `🍯 Postre casero artesanal\n`;
+                    message += `💰 ${order.quantity} x $2.00 = ${orderPrice.toFixed(2)}\n`;
+                } else if (order.dishType === 'pasta-linguini') {
+                    orderPrice = 4.00 * order.quantity;
+                    message += `🍝 ${order.quantity}x Pasta Linguini a la Bolognesa\n`;
+                    message += `🍽️ Pasta linguini con salsa bolognesa, pan de ajo y tajada\n`;
+                    if (order.quantity > 1) {
+                        message += `💰 ${order.quantity} x $4.00 = ${orderPrice.toFixed(2)}\n`;
+                    } else {
+                        message += `💰 ${orderPrice.toFixed(2)}\n`;
+                    }
                 } else if (order.dishType === 'pabellon') {
                     orderPrice = 5.00 * order.quantity;
                     message += `🇻🇪 ${order.quantity}x Pabellón Criollo Venezolano\n`;
