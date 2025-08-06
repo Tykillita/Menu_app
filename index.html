@@ -1654,7 +1654,21 @@
                 
                 message += `\n*Pedido ${index + 1} - ${order.forWho}:*\n`;
                 
-                if (order.dishType === 'dulce-maracuya') {
+                if (order.dishType === 'bolognesa' || order.dishType === 'napoli' || order.dishType === 'costilla') {
+                    const sauceNames = {
+                        'bolognesa': 'Salsa Bolognesa',
+                        'napoli': 'Salsa Napoli', 
+                        'costilla': 'Salsa de Costilla de Cerdo'
+                    };
+                    orderPrice = 5.00 * order.quantity;
+                    message += `🍝 ${order.quantity}x ${sauceNames[order.dishType]}\n`;
+                    message += `🍽️ Salsa artesanal congelada de 24 onzas, lista para calentar\n`;
+                    if (order.quantity > 1) {
+                        message += `💰 ${order.quantity} x $5.00 = ${orderPrice.toFixed(2)}\n`;
+                    } else {
+                        message += `💰 ${orderPrice.toFixed(2)}\n`;
+                    }
+                } else if (order.dishType === 'dulce-maracuya') {
                     orderPrice = 2.00 * order.quantity;
                     message += `🥭 ${order.quantity}x Dulce de Maracuyá (Parchita)\n`;
                     message += `🍯 Postre casero artesanal\n`;
