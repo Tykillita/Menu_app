@@ -796,10 +796,10 @@
                     <h3 class="step-title">Paso 1: Elige tu Plato Principal</h3>
                 <!--<button class="option-btn" onclick="selectDish('milanesa-pollo')">🐔 Milanesa de Pollo <div><div> (NO DISPONIBLE) </button>
                     <button class="option-btn" onclick="selectDish('milanesa-carne')">🥩 Milanesa de Carne <div><div> (NO DISPONIBLE) </button> -->
-                    <button class="option-btn" onclick="selectDish('pasta-linguini')" style="background: linear-gradient(45deg, rgba(139,69,19,0.1), rgba(160,82,45,0.1)); border: 1px solid rgba(139,69,19,0.3);">
-                        🍝 Pasta Linguini a la Bolognesa
+                    <button class="option-btn" onclick="selectDish('pasta-corta')" style="background: linear-gradient(45deg, rgba(139,69,19,0.1), rgba(160,82,45,0.1)); border: 1px solid rgba(139,69,19,0.3);">
+                        🍝 Pasta corta a la Bolognesa
                         <div style="font-size: 0.8rem; color: #ccc; margin-top: 5px;">
-                            Pasta linguini, salsa bolognesa, pan de ajo y tajada
+                            Pasta corta, salsa bolognesa, pan de ajo y tajada
                         </div>
                     </button>
                     <button class="option-btn" onclick="selectDish('pabellon')" style="background: linear-gradient(45deg, rgba(255,193,7,0.1), rgba(220,53,69,0.1)); border: 1px solid rgba(255,193,7,0.3);">
@@ -846,10 +846,10 @@
                     <h3 class="step-title">Paso 1: Elige tu Plato Principal</h3>
                 <!--<button class="option-btn" onclick="selectDish('milanesa-pollo')">🐔 Milanesa de Pollo</button>
                     <button class="option-btn" onclick="selectDish('milanesa-carne')">🥩 Milanesa de Carne</button> -->
-                    <button class="option-btn" onclick="selectDish('pasta-linguini')" style="background: linear-gradient(45deg, rgba(139,69,19,0.1), rgba(160,82,45,0.1)); border: 1px solid rgba(139,69,19,0.3);">
-                        🍝 Pasta Linguini a la Bolognesa
+                    <button class="option-btn" onclick="selectDish('pasta-corta')" style="background: linear-gradient(45deg, rgba(139,69,19,0.1), rgba(160,82,45,0.1)); border: 1px solid rgba(139,69,19,0.3);">
+                        🍝 Pasta corta a la Bolognesa
                         <div style="font-size: 0.8rem; color: #ccc; margin-top: 5px;">
-                            Pasta linguini, salsa bolognesa, pan de ajo y tajada
+                            Pasta corta, salsa bolognesa, pan de ajo y tajada
                         </div>
                     </button>
                     <button class="option-btn" onclick="selectDish('pabellon')" style="background: linear-gradient(45deg, rgba(255,193,7,0.1), rgba(220,53,69,0.1)); border: 1px solid rgba(255,193,7,0.3);">
@@ -948,7 +948,7 @@
             if (currentOrder.dishType === 'hallaca' && currentOrder.hallacaOption === 'individual') return 3.00;
             if (currentOrder.dishType === 'hallaca' && currentOrder.hallacaOption === 'bulk') return 2.50;
             if (currentOrder.dishType === 'pabellon') return 5.00;
-            if (currentOrder.dishType === 'pasta-linguini') return 4.00;
+            if (currentOrder.dishType === 'pasta-corta') return 4.00;
             return 5.00; // milanesas
         }
 
@@ -1043,8 +1043,8 @@
                     step4.classList.remove('step-hidden');
                     step4.scrollIntoView({ behavior: 'smooth' });
                 }, 300);
-            } else if (currentOrder.dishType === 'pasta-linguini') {
-                // Para pasta linguini - ir directamente al paso "para quién es"
+            } else if (currentOrder.dishType === 'pasta-corta') {
+                // Para pasta corta - ir directamente al paso "para quién es"
                 setTimeout(() => {
                     const step4 = document.getElementById('step4');
                     step4.innerHTML = `
@@ -1151,9 +1151,9 @@
                     document.getElementById('step2b').classList.remove('step-hidden');
                     document.getElementById('step2b').scrollIntoView({ behavior: 'smooth' });
                 }, 300);
-            } else if (dishType === 'pasta-linguini') {
-                    // Para pasta linguini, ir al selector de cantidad (sin acompañamientos)
-                    currentOrder.protein = 'pasta-linguini';
+            } else if (dishType === 'pasta-corta') {
+                    // Para pasta corta, ir al selector de cantidad (sin acompañamientos)
+                    currentOrder.protein = 'pasta-corta';
                     currentOrder.side = 'pasta-completa';
                     currentOrder.ensalada = false; // Pasta no lleva ensalada
                     currentOrder.tajada = true; // Ya viene incluida
@@ -1315,14 +1315,14 @@
                 sideText = 'Arroz blanco, carne mechada, caraotas (frijoles negros) y tajadas de plátano';
                 totalPrice = 5.00 * currentOrder.quantity;
                 priceText = currentOrder.quantity > 1 ? `${totalPrice.toFixed(2)} (${currentOrder.quantity} x $5.00)` : '$5.00';
-            } else if (currentOrder.dishType === 'pasta-linguini') {
-                proteinText = `${currentOrder.quantity}x Pasta Linguini a la Bolognesa`;
-                sideText = 'Pasta linguini con salsa bolognesa, pan de ajo y tajada de plátano';
+            } else if (currentOrder.dishType === 'pasta-corta') {
+                proteinText = `${currentOrder.quantity}x Pasta corta a la Bolognesa`;
+                sideText = 'Pasta corta con salsa bolognesa, pan de ajo y tajada de plátano';
                 totalPrice = 4.00 * currentOrder.quantity;
                 priceText = currentOrder.quantity > 1 ? `${totalPrice.toFixed(2)} (${currentOrder.quantity} x $4.00)` : '$4.00';
-            } else if (currentOrder.dishType === 'pasta-linguini') {
-                proteinText = `${currentOrder.quantity}x Pasta Linguini a la Bolognesa`;
-                sideText = 'Pasta linguini con salsa bolognesa, pan de ajo y tajada de plátano';
+            } else if (currentOrder.dishType === 'pasta-corta') {
+                proteinText = `${currentOrder.quantity}x Pasta corta a la Bolognesa`;
+                sideText = 'Pasta corta con salsa bolognesa, pan de ajo y tajada de plátano';
                 totalPrice = 4.00 * currentOrder.quantity;
                 priceText = currentOrder.quantity > 1 ? `${totalPrice.toFixed(2)} (${currentOrder.quantity} x $4.00)` : '$4.00';
             } else if (currentOrder.dishType === 'dulce-limon') {
@@ -1366,7 +1366,7 @@
                     </div>
                 `;
             } else if (!isDessertMode) {
-                if (currentOrder.dishType !== 'pabellon' && currentOrder.dishType !== 'hallaca' && currentOrder.dishType !== 'pasta-linguini') {
+                if (currentOrder.dishType !== 'pabellon' && currentOrder.dishType !== 'hallaca' && currentOrder.dishType !== 'pasta-corta') {
                     summaryHTML += `
                         <div class="summary-item">
                             <strong>🍽️ Acompañamiento:</strong> ${sideText}
@@ -1552,11 +1552,11 @@
                         <p><strong>🍯</strong> Postre casero artesanal</p>
                         ${order.quantity > 1 ? `<p><strong>💰</strong> ${order.quantity} x $2.00 = ${orderPrice.toFixed(2)}</p>` : `<p><strong>💰</strong> ${orderPrice.toFixed(2)}</p>`}
                     `;
-                } else if (order.dishType === 'pasta-linguini') {
+                } else if (order.dishType === 'pasta-corta') {
                     orderPrice = 4.00 * order.quantity;
                     dishDescription = `
-                        <p><strong>🍝</strong> ${order.quantity}x Pasta Linguini a la Bolognesa</p>
-                        <p><strong>🍽️</strong> Pasta linguini con salsa bolognesa, pan de ajo y tajada</p>
+                        <p><strong>🍝</strong> ${order.quantity}x Pasta corta a la Bolognesa</p>
+                        <p><strong>🍽️</strong> Pasta corta con salsa bolognesa, pan de ajo y tajada</p>
                         ${order.quantity > 1 ? `<p><strong>💰</strong> ${order.quantity} x $4.00 = ${orderPrice.toFixed(2)}</p>` : `<p><strong>💰</strong> ${orderPrice.toFixed(2)}</p>`}
                     `;
                 } else if (order.dishType === 'pabellon') {
@@ -1678,10 +1678,10 @@
                     message += `🍋 ${order.quantity}x Dulce de Limón\n`;
                     message += `🍯 Postre casero artesanal\n`;
                     message += `💰 ${order.quantity} x $2.00 = ${orderPrice.toFixed(2)}\n`;
-                } else if (order.dishType === 'pasta-linguini') {
+                } else if (order.dishType === 'pasta-corta') {
                     orderPrice = 4.00 * order.quantity;
-                    message += `🍝 ${order.quantity}x Pasta Linguini a la Bolognesa\n`;
-                    message += `🍽️ Pasta linguini con salsa bolognesa, pan de ajo y tajada\n`;
+                    message += `🍝 ${order.quantity}x Pasta corta a la Bolognesa\n`;
+                    message += `🍽️ Pasta corta con salsa bolognesa, pan de ajo y tajada\n`;
                     if (order.quantity > 1) {
                         message += `💰 ${order.quantity} x $4.00 = ${orderPrice.toFixed(2)}\n`;
                     } else {
@@ -1934,8 +1934,8 @@
                 orderName = `${order.quantity}x Dulce de Maracuyá para ${order.forWho}`;
             } else if (order.dishType === 'dulce-limon') {
                 orderName = `${order.quantity}x Dulce de Limón para ${order.forWho}`;
-            } else if (order.dishType === 'pasta-linguini') {
-                orderName = `${order.quantity}x Pasta Linguini para ${order.forWho}`;
+            } else if (order.dishType === 'pasta-corta') {
+                orderName = `${order.quantity}x Pasta corta para ${order.forWho}`;
             } else if (order.dishType === 'pabellon') {
                 orderName = `${order.quantity}x Pabellón Criollo para ${order.forWho}`;
             } else if (order.dishType === 'hallaca') {
