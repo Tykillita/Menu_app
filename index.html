@@ -623,6 +623,12 @@
                     <small style="color: #999; font-size: 0.9rem;">Incluye referencias para encontrarte fácil</small>
                 </div>
                 
+                <div class="form-group">
+                    <label for="specialNotes">📝 Notas especiales (opcional):</label>
+                    <textarea id="specialNotes" class="text-input" placeholder="Ej: Sin cebolla, extra picante, entregar en la portería..." rows="3"></textarea>
+                    <small style="color: #999; font-size: 0.9rem;">Cualquier solicitud especial o comentario</small>
+                </div>
+                
                 <div class="privacy-note">
                     <p style="font-size: 0.85rem; color: #888; text-align: center; margin: 15px 0;">
                         🔒 Tus datos solo se usan para este pedido y no se guardan
@@ -1596,6 +1602,9 @@
                     <div class="order-item">
                         <h4>Pedido ${index + 1} - ${order.forWho}</h4>
                         ${dishDescription}
+                        <button class="btn" style="background: linear-gradient(45deg, #ffa500, #ff8c00); padding: 8px 15px; font-size: 0.9rem; margin-top: 10px;" onclick="editOrder(${index})">✏️ Editar</button>
+                        <button class="btn" style="background: linear-gradient(45deg, #dc3545, #c82333); padding: 8px 15px; font-size: 0.9rem; flex: 1;" onclick="deleteOrder(${index})">🗑️ Eliminar</button>
+
                     </div>
                 `;
             });
@@ -1621,13 +1630,14 @@
             const name = document.getElementById('customerName').value.trim();
             const phone = document.getElementById('customerPhone').value.trim();
             const address = document.getElementById('customerAddress').value.trim();
+            const specialNotes = document.getElementById('specialNotes').value.trim();
             
             if (!name || !phone || !address) {
                 alert('Por favor, completa todos los datos requeridos');
                 return;
             }
             
-            customerData = { name, phone, address };
+            customerData = { name, phone, address, specialNotes };
             
             let message = `🍽️ *PEDIDO - LA COCINA DE ANITA*\n\n`;
             message += `👤 *DATOS DEL CLIENTE:*\n`;
@@ -1711,8 +1721,12 @@
             });
             
             message += `\n💰 *TOTAL: ${total.toFixed(2)}*\n\n`;
+
+            if (customerData.specialNotes) {
+                message += `📝 *NOTAS ESPECIALES:*\n${customerData.specialNotes}\n\n`;
+            }
+
             message += `¡Hola! Este es mi pedido completo. ¿Podrías confirmar la disponibilidad y tiempo de entrega?\n\n`;
-            message += `Gracias! 😊`;
             
             const encodedMessage = encodeURIComponent(message);
             window.open(`https://wa.me/50768257958?text=${encodedMessage}`, '_blank');
@@ -1808,6 +1822,7 @@
             document.getElementById('customerName').value = '';
             document.getElementById('customerPhone').value = '';
             document.getElementById('customerAddress').value = '';
+            document.getElementById('specialNotes').value = ''; 
             
             document.getElementById('step2').classList.add('step-hidden');
             document.getElementById('step2b').classList.add('step-hidden');
@@ -1846,6 +1861,92 @@
                 document.body.style.opacity = '1';
             }, 100);
         });
+
+        function editOrder(index) {
+            if (confirm('¿Quieres editar este pedido?')) {
+                // Remover el pedido de la lista
+                const orderToEdit = allOrders.splice(index, 1)[0];
+                
+                // Cargar los datos del pedido a editar
+                currentOrder = {...orderToEdit};
+                
+                // Determinar el tipo de pedido para configurar el modo correcto
+                if (orderToEdit.dishType === 'dulce-maracuya' || orderToEdit.dishType === 'dulce-limon') {
+                    isDessertMode = true;
+                    isSauceMode = false;
+                } else if (orderToEdit.dishType === 'bolognesa' || orderToEdit.dishType === 'napoli' || orderToEdit.dishType === 'costilla') {
+                    isDessertMode = false;
+                    isSauceMode = true;
+                } else {
+                    isDessertMode = false;
+                    isSauceMode = false;
+                }
+                
+                // Resetear y mostrar el formulario de pedido
+                resetSteps();
+                setupInitialMenuSteps();
+                
+                // Ocultar resumen de todos los pedidos
+                document.getElementById('allOrdersSummary').classList.add('step-hidden');
+                
+                // Mostrar mensaje de edición
+                alert('Ahora puedes modificar este pedido. Los cambios se guardarán cuando confirmes.');
+                
+                document.getElementById('step1').scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+        
+        function deleteOrder(index) {
+            const order = allOrders[index];
+            let orderName = '';
+            
+            // Determinar el nombre del pedido para el mensaje de confirmación
+            if (order.dishType === 'dulce-maracuya') {
+                orderName = `${order.quantity}x Dulce de Maracuyá para ${order.forWho}`;
+            } else if (order.dishType === 'dulce-limon') {
+                orderName = `${order.quantity}x Dulce de Limón para ${order.forWho}`;
+            } else if (order.dishType === 'pasta-linguini') {
+                orderName = `${order.quantity}x Pasta Linguini para ${order.forWho}`;
+            } else if (order.dishType === 'pabellon') {
+                orderName = `${order.quantity}x Pabellón Criollo para ${order.forWho}`;
+            } else if (order.dishType === 'hallaca') {
+                if (order.hallacaOption === 'individual') {
+                    orderName = `${order.quantity}x Hallaca${order.quantity > 1 ? 's' : ''} para ${order.forWho}`;
+                } else {
+                    orderName = `${order.hallacaQuantity} Hallacas (Por Mayor) para ${order.forWho}`;
+                }
+            } else if (order.dishType === 'bolognesa' || order.dishType === 'napoli' || order.dishType === 'costilla') {
+                const sauceNames = {
+                    'bolognesa': 'Salsa Bolognesa',
+                    'napoli': 'Salsa Napoli', 
+                    'costilla': 'Salsa de Costilla'
+                };
+                orderName = `${order.quantity}x ${sauceNames[order.dishType]} para ${order.forWho}`;
+            } else {
+                const proteinText = order.protein === 'pollo' ? 'Milanesa de Pollo' : 'Milanesa de Carne';
+                orderName = `${order.quantity}x ${proteinText} para ${order.forWho}`;
+            }
+            
+            if (confirm(`¿Estás seguro de que quieres eliminar este pedido?\n\n${orderName}`)) {
+                // Eliminar el pedido del array
+                allOrders.splice(index, 1);
+                
+                // Si no quedan pedidos, volver al inicio
+                if (allOrders.length === 0) {
+                    alert('Se eliminaron todos los pedidos. Regresando al inicio...');
+                    goBack();
+                    return;
+                }
+                
+                // Si quedan pedidos, actualizar el resumen
+                showAllOrdersSummary();
+                
+                // Mostrar mensaje de confirmación
+                setTimeout(() => {
+                    alert('Pedido eliminado correctamente');
+                }, 100);
+            }
+        }
     </script>
 </body>
 </html>
