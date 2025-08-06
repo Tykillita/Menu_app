@@ -1805,6 +1805,7 @@
         }
 
         function goBack() {
+            // Resetear variables globales
             currentOrder = {
                 dishType: '',
                 protein: '',
@@ -1818,12 +1819,25 @@
             };
             allOrders = [];
             customerData = { name: '', phone: '', address: '' };
+            isDessertMode = false;
+            isSauceMode = false;
             
-            document.getElementById('customerName').value = '';
-            document.getElementById('customerPhone').value = '';
-            document.getElementById('customerAddress').value = '';
-            document.getElementById('specialNotes').value = ''; 
+            // Limpiar todos los campos de input
+            const customerNameInput = document.getElementById('customerName');
+            const customerPhoneInput = document.getElementById('customerPhone');
+            const customerAddressInput = document.getElementById('customerAddress');
+            const specialNotesInput = document.getElementById('specialNotes');
+            const forWhoInput = document.getElementById('forWhoInput');
+            const hallacaInput = document.getElementById('hallacaQuantityInput');
             
+            if (customerNameInput) customerNameInput.value = '';
+            if (customerPhoneInput) customerPhoneInput.value = '';
+            if (customerAddressInput) customerAddressInput.value = '';
+            if (specialNotesInput) specialNotesInput.value = '';
+            if (forWhoInput) forWhoInput.value = '';
+            if (hallacaInput) hallacaInput.value = '10';
+            
+            // Ocultar todas las pantallas del menú
             document.getElementById('step2').classList.add('step-hidden');
             document.getElementById('step2b').classList.add('step-hidden');
             document.getElementById('step2c').classList.add('step-hidden');
@@ -1833,34 +1847,35 @@
             document.getElementById('allOrdersSummary').classList.add('step-hidden');
             document.getElementById('customerForm').classList.add('step-hidden');
             
+            // Limpiar selecciones
             document.querySelectorAll('.option-btn').forEach(btn => {
                 btn.classList.remove('selected');
             });
             
-            document.getElementById('ensaladaBtn').classList.add('active');
-            document.getElementById('tajadaBtn').classList.add('active');
+            // Resetear botones de extras
+            const ensaladaBtn = document.getElementById('ensaladaBtn');
+            const tajadaBtn = document.getElementById('tajadaBtn');
+            if (ensaladaBtn) ensaladaBtn.classList.add('active');
+            if (tajadaBtn) tajadaBtn.classList.add('active');
             
-            document.getElementById('forWhoInput').value = '';
-            document.getElementById('hallacaQuantityInput').value = '10';
-            
-            // Remover botón continuar si existe
+            // Remover elementos temporales
             const continueBtn = document.querySelector('.continue-btn');
             if (continueBtn) {
                 continueBtn.remove();
             }
             
+            const tempStep = document.getElementById('tempForWhoStep');
+            if (tempStep) {
+                tempStep.remove();
+            }
+            
+            // Ocultar pantalla del menú y mostrar pantalla de bienvenida
             document.getElementById('menuScreen').style.display = 'none';
             document.getElementById('welcomeScreen').classList.remove('hidden');
+            
+            // Hacer scroll hacia arriba
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-
-        // Animación inicial
-        window.addEventListener('load', () => {
-            document.body.style.opacity = '0';
-            setTimeout(() => {
-                document.body.style.transition = 'opacity 0.5s ease';
-                document.body.style.opacity = '1';
-            }, 100);
-        });
 
         function editOrder(index) {
             if (confirm('¿Quieres editar este pedido?')) {
@@ -1895,7 +1910,7 @@
                 document.getElementById('step1').scrollIntoView({ behavior: 'smooth' });
             }
         }
-        
+
         function deleteOrder(index) {
             const order = allOrders[index];
             let orderName = '';
