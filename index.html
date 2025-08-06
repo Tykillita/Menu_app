@@ -578,7 +578,7 @@
                 <h3 class="summary-title">📋 Resumen de tu Pedido</h3>
                 <div id="summaryContent"></div>
                 <div class="price-display">
-                    <strong style="font-size: 1.3rem; color: #4ecdc4;">💰 Precio: $5.00</strong>
+                    <strong style="font-size: 1.3rem; color: #4ecdc4;" id="orderPrice">💰 Precio: $5.00</strong>
                 </div>
                 <div style="margin-top: 20px;">
                     <button class="btn" style="background: linear-gradient(45deg, #1f4d1f, #2a5f2a); margin: 5px;" onclick="addAnotherOrder()">➕ Agregar Otro Pedido</button>
@@ -591,7 +591,7 @@
                 <h3 class="step-title">🛒 Todos tus Pedidos</h3>
                 <div id="allOrdersContent"></div>
                 <div class="total-price">
-                    <h3 style="color: #ff6b6b; margin-top: 20px;">💰 Total: $<span id="totalPrice">5.00</span></h3>
+                    <h3 style="color: #ff6b6b; margin-top: 20px;">💰 Total: $<span id="totalPrice">0.00</span></h3>
                 </div>
                 <div style="margin-top: 20px;">
                     <button class="btn" style="background: linear-gradient(45deg, #1f4d1f, #2a5f2a); margin: 5px;" onclick="addAnotherOrder()">➕ Agregar Otro Pedido</button>
@@ -625,7 +625,7 @@
                 
                 <div class="form-group">
                     <label for="specialNotes">📝 Notas especiales (opcional):</label>
-                    <textarea id="specialNotes" class="text-input" placeholder="Ej: Sin cebolla, extra picante, entregar en la portería..." rows="3"></textarea>
+                    <textarea id="specialNotes" class="text-input" placeholder="Ej: Extra picante, entregar en la portería..." rows="3"></textarea>
                     <small style="color: #999; font-size: 0.9rem;">Cualquier solicitud especial o comentario</small>
                 </div>
                 
@@ -759,18 +759,18 @@
                             Salsa tradicional italiana de tomate (24 oz)
                         </div>
                         <div style="font-size: 0.9rem; color: #4ecdc4; margin-top: 8px; font-weight: bold;">
-                            💰 $5.00 cada una
+                            💰 $4.00 cada una
                         </div>
                     </button>
-                     <!-- <button class="option-btn" onclick="selectSauce('costilla')" style="background: linear-gradient(45deg, rgba(101,67,33,0.1), rgba(139,90,43,0.1)); border: 1px solid rgba(101,67,33,0.3);">
-                        🥩 Salsa de Costilla de Cerdo
+                    <button class="option-btn" onclick="selectSauce('costilla')" style="background: linear-gradient(45deg, rgba(101,67,33,0.1), rgba(139,90,43,0.1)); border: 1px solid rgba(101,67,33,0.3);">
+                        🥩 Salsa Napoli con Costilla de Cerdo
                         <div style="font-size: 0.8rem; color: #ccc; margin-top: 5px;">
                             Salsa rica en sabor con costilla de cerdo (24 oz)
                         </div>
                         <div style="font-size: 0.9rem; color: #4ecdc4; margin-top: 8px; font-weight: bold;">
-                            💰 $5.00 cada una
+                            💰 $6.00 cada una
                         </div>
-                    </button> -->
+                    </button>
                 `;
             
             } else if (isDessertMode) {
@@ -801,17 +801,26 @@
                         <div style="font-size: 0.8rem; color: #ccc; margin-top: 5px;">
                             Pasta corta, salsa bolognesa, pan de ajo y tajada
                         </div>
+                        <div style="font-size: 0.9rem; color: #4ecdc4; margin-top: 8px; font-weight: bold;">
+                            💰 $4.00 cada una
+                        </div>
                     </button>
                     <button class="option-btn" onclick="selectDish('pabellon')" style="background: linear-gradient(45deg, rgba(255,193,7,0.1), rgba(220,53,69,0.1)); border: 1px solid rgba(255,193,7,0.3);">
                         🇻🇪 Pabellón Criollo Venezolano
                         <div style="font-size: 0.8rem; color: #ccc; margin-top: 5px;">
                             Arroz, carne mechada, caraotas (frijoles negros) y tajadas
                         </div>
+                        <div style="font-size: 0.9rem; color: #4ecdc4; margin-top: 8px; font-weight: bold;">
+                            💰 $5.00 cada una
+                        </div>
                     </button>
                     <button class="option-btn" onclick="selectDish('hallaca')" style="background: linear-gradient(45deg, rgba(255,215,0,0.1), rgba(139,69,19,0.1)); border: 1px solid rgba(255,215,0,0.3);">
                         🫔 Hallaca Venezolana
                         <div style="font-size: 0.8rem; color: #ccc; margin-top: 5px;">
                             Masa de maíz rellena con guiso, envuelta en hoja de plátano
+                        </div>
+                        <div style="font-size: 0.9rem; color: #4ecdc4; margin-top: 8px; font-weight: bold;">
+                            💰 Dos opciones de precio
                         </div>
                     </button>
                 `;
@@ -943,7 +952,11 @@
         }
 
         function getCurrentPrice() {
-            if (isSauceMode) return 5.00;
+            if (isSauceMode) {
+                if (currentOrder.dishType === 'napoli') return 4.00;
+                if (currentOrder.dishType === 'bolognesa') return 5.00;
+                if (currentOrder.dishType === 'costilla') return 6.00;
+            }
             if (isDessertMode) return 2.00;
             if (currentOrder.dishType === 'hallaca' && currentOrder.hallacaOption === 'individual') return 3.00;
             if (currentOrder.dishType === 'hallaca' && currentOrder.hallacaOption === 'bulk') return 2.50;
@@ -1299,12 +1312,22 @@
                 const sauceNames = {
                     'bolognesa': 'Salsa Bolognesa',
                     'napoli': 'Salsa Napoli', 
-                    'costilla': 'Salsa de Costilla de Cerdo'
+                    'costilla': 'Salsa Napoli con Costilla de Cerdo'
                 };
                 proteinText = `${currentOrder.quantity}x ${sauceNames[currentOrder.dishType]}`;
                 sideText = 'Salsa artesanal congelada de 24 onzas, lista para calentar';
-                totalPrice = 5.00 * currentOrder.quantity;
-                priceText = currentOrder.quantity > 1 ? `${totalPrice.toFixed(2)} (${currentOrder.quantity} x $5.00)` : '$5.00';
+                
+                if (currentOrder.dishType === 'napoli') {
+                    totalPrice = 4.00 * currentOrder.quantity;
+                    priceText = currentOrder.quantity > 1 ? `$${totalPrice.toFixed(2)} (${currentOrder.quantity} x $4.00)` : '$4.00';
+                } else if (currentOrder.dishType === 'bolognesa') {
+                    totalPrice = 5.00 * currentOrder.quantity;
+                    priceText = currentOrder.quantity > 1 ? `$${totalPrice.toFixed(2)} (${currentOrder.quantity} x $5.00)` : '$5.00';
+                } else if (currentOrder.dishType === 'costilla') {
+                    totalPrice = 6.00 * currentOrder.quantity;
+                    priceText = currentOrder.quantity > 1 ? `$${totalPrice.toFixed(2)} (${currentOrder.quantity} x $6.00)` : '$6.00';
+                }
+    
             } else if (isDessertMode) {
                 proteinText = `${currentOrder.quantity}x Dulce de Maracuyá (Parchita)`;
                 sideText = 'Postre casero artesanal';
@@ -1315,11 +1338,6 @@
                 sideText = 'Arroz blanco, carne mechada, caraotas (frijoles negros) y tajadas de plátano';
                 totalPrice = 5.00 * currentOrder.quantity;
                 priceText = currentOrder.quantity > 1 ? `${totalPrice.toFixed(2)} (${currentOrder.quantity} x $5.00)` : '$5.00';
-            } else if (currentOrder.dishType === 'pasta-corta') {
-                proteinText = `${currentOrder.quantity}x Pasta corta a la Bolognesa`;
-                sideText = 'Pasta corta con salsa bolognesa, pan de ajo y tajada de plátano';
-                totalPrice = 4.00 * currentOrder.quantity;
-                priceText = currentOrder.quantity > 1 ? `${totalPrice.toFixed(2)} (${currentOrder.quantity} x $4.00)` : '$4.00';
             } else if (currentOrder.dishType === 'pasta-corta') {
                 proteinText = `${currentOrder.quantity}x Pasta corta a la Bolognesa`;
                 sideText = 'Pasta corta con salsa bolognesa, pan de ajo y tajada de plátano';
@@ -1394,8 +1412,8 @@
             }
             
             document.getElementById('summaryContent').innerHTML = summaryHTML;
-            document.querySelector('.price-display strong').innerHTML = `💰 Precio: ${priceText}`;
-            }
+            document.getElementById('orderPrice').innerHTML = `💰 Precio: ${priceText}`;
+        }
 
         function addAnotherOrder() {
             // Guardar el pedido actual
@@ -1530,13 +1548,19 @@
                     const sauceNames = {
                         'bolognesa': 'Salsa Bolognesa',
                         'napoli': 'Salsa Napoli', 
-                        'costilla': 'Salsa de Costilla de Cerdo'
+                        'costilla': 'Salsa Napoli con Costilla de Cerdo'
                     };
-                    orderPrice = 5.00 * order.quantity;
+                    if (order.dishType === 'napoli') {
+                        orderPrice = 4.00 * order.quantity;
+                    } else if (order.dishType === 'bolognesa') {
+                        orderPrice = 5.00 * order.quantity;
+                    } else if (order.dishType === 'costilla') {
+                        orderPrice = 6.00 * order.quantity;
+                    }
                     dishDescription = `
                         <p><strong>🍝</strong> ${order.quantity}x ${sauceNames[order.dishType]}</p>
                         <p><strong>🍽️</strong> Salsa artesanal congelada de 24 onzas, lista para calentar</p>
-                        ${order.quantity > 1 ? `<p><strong>💰</strong> ${order.quantity} x $5.00 = ${orderPrice.toFixed(2)}</p>` : `<p><strong>💰</strong> ${orderPrice.toFixed(2)}</p>`}
+                        ${order.quantity > 1 ? `<p><strong>💰</strong> ${order.quantity} x $${(orderPrice/order.quantity).toFixed(2)} = ${orderPrice.toFixed(2)}</p>` : `<p><strong>💰</strong> ${orderPrice.toFixed(2)}</p>`}
                     `;
                 } else if (order.dishType === 'dulce-maracuya') {
                     orderPrice = 2.00 * order.quantity;
@@ -1658,13 +1682,19 @@
                     const sauceNames = {
                         'bolognesa': 'Salsa Bolognesa',
                         'napoli': 'Salsa Napoli', 
-                        'costilla': 'Salsa de Costilla de Cerdo'
+                        'costilla': 'Salsa Napoli con Costilla de Cerdo'
                     };
-                    orderPrice = 5.00 * order.quantity;
+                    if (order.dishType === 'napoli') {
+                        orderPrice = 4.00 * order.quantity;
+                    } else if (order.dishType === 'bolognesa') {
+                        orderPrice = 5.00 * order.quantity;
+                    } else if (order.dishType === 'costilla') {
+                        orderPrice = 6.00 * order.quantity;
+                    }
                     message += `🍝 ${order.quantity}x ${sauceNames[order.dishType]}\n`;
                     message += `🍽️ Salsa artesanal congelada de 24 onzas, lista para calentar\n`;
                     if (order.quantity > 1) {
-                        message += `💰 ${order.quantity} x $5.00 = ${orderPrice.toFixed(2)}\n`;
+                        message += `💰 ${order.quantity} x $${(orderPrice/order.quantity).toFixed(2)} = ${orderPrice.toFixed(2)}\n`;
                     } else {
                         message += `💰 ${orderPrice.toFixed(2)}\n`;
                     }
