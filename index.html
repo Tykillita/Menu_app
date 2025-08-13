@@ -822,6 +822,15 @@
                             💰 $5.00 cada una
                         </div>
                     </button>
+                    <button class="option-btn" onclick="selectDish('pollo-frito')" style="background: linear-gradient(45deg, rgba(255,140,0,0.1), rgba(255,165,0,0.1)); border: 1px solid rgba(255,140,0,0.3);">
+                        🍗 Pollo Frito con Puré y Tajadas
+                        <div style="font-size: 0.8rem; color: #ccc; margin-top: 5px;">
+                            Pollo frito dorado, puré de papa cremoso y tajadas de plátano
+                        </div>
+                        <div style="font-size: 0.9rem; color: #4ecdc4; margin-top: 8px; font-weight: bold;">
+                            💰 $5.00 cada una
+                        </div>
+                    </button>
                 <!--<button class="option-btn" onclick="selectDish('pabellon')" style="background: linear-gradient(45deg, rgba(255,193,7,0.1), rgba(220,53,69,0.1)); border: 1px solid rgba(255,193,7,0.3);">
                         🇻🇪 Pabellón Criollo Venezolano
                         <div style="font-size: 0.8rem; color: #ccc; margin-top: 5px;">
@@ -888,6 +897,15 @@
                         🍝 Pasta corta con Salsa de Costilla de Cerdo
                         <div style="font-size: 0.8rem; color: #ccc; margin-top: 5px;">
                             Pasta corta con salsa de costilla de cerdo, pan de ajo y tajada
+                        </div>
+                        <div style="font-size: 0.9rem; color: #4ecdc4; margin-top: 8px; font-weight: bold;">
+                            💰 $5.00 cada una
+                        </div>
+                    </button>
+                    <button class="option-btn" onclick="selectDish('pollo-frito')" style="background: linear-gradient(45deg, rgba(255,140,0,0.1), rgba(255,165,0,0.1)); border: 1px solid rgba(255,140,0,0.3);">
+                        🍗 Pollo Frito con Puré y Tajadas
+                        <div style="font-size: 0.8rem; color: #ccc; margin-top: 5px;">
+                            Pollo frito dorado, puré de papa cremoso y tajadas de plátano
                         </div>
                         <div style="font-size: 0.9rem; color: #4ecdc4; margin-top: 8px; font-weight: bold;">
                             💰 $5.00 cada una
@@ -1004,6 +1022,7 @@
             if (currentOrder.dishType === 'dulce-limon') return 2.00;
             if (currentOrder.dishType === 'dulce-maracuya') return 2.00;
             if (currentOrder.dishType === 'pasta-costilla') return 5.00;
+            if (currentOrder.dishType === 'pollo-frito') return 5.00;
             return 5.00; // milanesas
         }
 
@@ -1100,6 +1119,18 @@
                 }, 300);
             } else if (currentOrder.dishType === 'pasta-costilla') {
                 // Para pasta con costilla - ir al paso "para quién es"
+                setTimeout(() => {
+                    const step4 = document.getElementById('step4');
+                    step4.innerHTML = `
+                        <h3 class="step-title">Paso 3: ¿Para quién es este pedido?</h3>
+                        <input type="text" id="forWhoInput" class="text-input" placeholder="Ej: Para María, Para Juan, Para mí..." maxlength="50">
+                        <button class="btn" style="width: 100%; margin-top: 15px;" onclick="setOrderRecipient()">✅ Confirmar</button>
+                    `;
+                    step4.classList.remove('step-hidden');
+                    step4.scrollIntoView({ behavior: 'smooth' });
+                }, 300);
+            } else if (currentOrder.dishType === 'pollo-frito') {
+                // Para pollo frito - ir al paso "para quién es"
                 setTimeout(() => {
                     const step4 = document.getElementById('step4');
                     step4.innerHTML = `
@@ -1245,6 +1276,16 @@
             currentOrder.protein = 'pasta-costilla';
             currentOrder.side = 'pasta-completa-costilla';
             currentOrder.ensalada = false; // Pasta no lleva ensalada
+            currentOrder.tajada = true; // Ya viene incluida
+            
+            setTimeout(() => {
+                showQuantitySelector();
+            }, 300);
+        } else if (dishType === 'pollo-frito') {
+            // Para pollo frito, ir al selector de cantidad (sin acompañamientos)
+            currentOrder.protein = 'pollo-frito';
+            currentOrder.side = 'pollo-completo';
+            currentOrder.ensalada = false; // Pollo frito no lleva ensalada
             currentOrder.tajada = true; // Ya viene incluida
             
             setTimeout(() => {
@@ -1433,6 +1474,11 @@
                 sideText = 'Pasta corta con salsa de costilla de cerdo, pan de ajo y tajada';
                 totalPrice = 5.00 * currentOrder.quantity;
                 priceText = currentOrder.quantity > 1 ? `${totalPrice.toFixed(2)} (${currentOrder.quantity} x $5.00)` : '$5.00';
+            } else if (currentOrder.dishType === 'pollo-frito') {
+                proteinText = `${currentOrder.quantity}x Pollo Frito con Puré y Tajadas`;
+                sideText = 'Pollo frito dorado, puré de papa cremoso y tajadas de plátano';
+                totalPrice = 5.00 * currentOrder.quantity;
+                priceText = currentOrder.quantity > 1 ? `$${totalPrice.toFixed(2)} (${currentOrder.quantity} x $5.00)` : '$5.00';
             } else if (currentOrder.dishType === 'hallaca') {
                 if (currentOrder.hallacaOption === 'individual') {
                     proteinText = `${currentOrder.quantity}x Hallaca${currentOrder.quantity > 1 ? 's' : ''} Venezolana${currentOrder.quantity > 1 ? 's' : ''} Individual${currentOrder.quantity > 1 ? 'es' : ''}`;
@@ -1683,6 +1729,13 @@
                         <p><strong>🍽️</strong> Pasta corta con salsa de costilla de cerdo, pan de ajo y tajada</p>
                         <p><strong>💰</strong> ${orderPrice.toFixed(2)}</p>
                     `;
+                } else if (order.dishType === 'pollo-frito') {
+                    orderPrice = 5.00 * order.quantity;
+                    dishDescription = `
+                        <p><strong>🍗</strong> ${order.quantity}x Pollo Frito con Puré y Tajadas</p>
+                        <p><strong>🍽️</strong> Pollo frito dorado, puré de papa cremoso y tajadas de plátano</p>
+                        <p><strong>💰</strong> $${orderPrice.toFixed(2)}</p>
+                    `;
                 } else if (order.dishType === 'pabellon') {
                     orderPrice = 5.00 * order.quantity;
                     dishDescription = `
@@ -1824,6 +1877,15 @@
                         message += `💰 ${order.quantity} x $5.00 = ${orderPrice.toFixed(2)}\n`;
                     } else {
                         message += `💰 ${orderPrice.toFixed(2)}\n`;
+                    }
+                } else if (order.dishType === 'pollo-frito') {
+                    orderPrice = 5.00 * order.quantity;
+                    message += `🍗 ${order.quantity}x Pollo Frito con Puré y Tajadas\n`;
+                    message += `🍽️ Pollo frito dorado, puré de papa cremoso y tajadas de plátano\n`;
+                    if (order.quantity > 1) {
+                        message += `💰 ${order.quantity} x $5.00 = $${orderPrice.toFixed(2)}\n`;
+                    } else {
+                        message += `💰 $${orderPrice.toFixed(2)}\n`;
                     }
                 } else if (order.dishType === 'pabellon') {
                     orderPrice = 5.00 * order.quantity;
@@ -2104,6 +2166,8 @@
                 orderName = `${order.quantity}x Arroz con Leche para ${order.forWho}`;
             } else if (order.dishType === 'pasta-costilla') {
                 orderName = `${order.quantity}x Pasta con Costilla para ${order.forWho}`;
+            } else if (order.dishType === 'pollo-frito') {
+                orderName = `${order.quantity}x Pollo Frito para ${order.forWho}`;
             } else if (order.dishType === 'bolognesa' || order.dishType === 'napoli' || order.dishType === 'costilla') {
                 const sauceNames = {
                     'bolognesa': 'Salsa Bolognesa',
