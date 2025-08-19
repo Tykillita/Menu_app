@@ -1196,6 +1196,30 @@
                     step4.classList.remove('step-hidden');
                     step4.scrollIntoView({ behavior: 'smooth' });
                 }, 300);
+            } else if (currentOrder.dishType === 'lasagna') {
+                // Para lasagna - ir al paso "para quién es"
+                setTimeout(() => {
+                    const step4 = document.getElementById('step4');
+                    step4.innerHTML = `
+                        <h3 class="step-title">Paso 3: ¿Para quién es este pedido?</h3>
+                        <input type="text" id="forWhoInput" class="text-input" placeholder="Ej: Para María, Para Juan, Para mí..." maxlength="50">
+                        <button class="btn" style="width: 100%; margin-top: 15px;" onclick="setOrderRecipient()">✅ Confirmar</button>
+                    `;
+                    step4.classList.remove('step-hidden');
+                    step4.scrollIntoView({ behavior: 'smooth' });
+                }, 300);
+            } else if (currentOrder.dishType === 'marquesa-chocolate') {
+                // Para marquesa de chocolate - ir al paso "para quién es"
+                setTimeout(() => {
+                    const step4 = document.getElementById('step4');
+                    step4.innerHTML = `
+                        <h3 class="step-title">Paso 3: ¿Para quién es este pedido?</h3>
+                        <input type="text" id="forWhoInput" class="text-input" placeholder="Ej: Para María, Para Juan, Para mí..." maxlength="50">
+                        <button class="btn" style="width: 100%; margin-top: 15px;" onclick="setOrderRecipient()">✅ Confirmar</button>
+                    `;
+                    step4.classList.remove('step-hidden');
+                    step4.scrollIntoView({ behavior: 'smooth' });
+                }, 300);
             } else if (currentOrder.dishType === 'hallaca' && currentOrder.hallacaOption === 'individual') {
                 // Para hallacas individuales - ir al paso "para quién es"
                 setTimeout(() => {
@@ -1484,6 +1508,9 @@
                 } else if (currentOrder.dishType === 'arroz-con-leche') {
                     proteinText = `${currentOrder.quantity}x Arroz con Leche`;
                     totalPrice = 2.00 * currentOrder.quantity;
+                } else if (currentOrder.dishType === 'marquesa-chocolate') {
+                    proteinText = `${currentOrder.quantity}x Marquesa de Chocolate`;
+                    totalPrice = 2.00 * currentOrder.quantity;
                 }
                 sideText = 'Postre casero artesanal';
                 priceText = currentOrder.quantity > 1 ? `$${totalPrice.toFixed(2)} (${currentOrder.quantity} x $${(totalPrice/currentOrder.quantity).toFixed(2)})` : `$${totalPrice.toFixed(2)}`;
@@ -1508,6 +1535,16 @@
                 sideText = 'Pollo frito dorado, puré de papa cremoso y tajadas de plátano';
                 totalPrice = 5.00 * currentOrder.quantity;
                 priceText = currentOrder.quantity > 1 ? `$${totalPrice.toFixed(2)} (${currentOrder.quantity} x $5.00)` : '$5.00';
+            } else if (currentOrder.dishType === 'lasagna') {
+                proteinText = `${currentOrder.quantity}x Lasagna (Pasticho)`;
+                sideText = 'Capas de pasta con salsa bolognesa, queso y bechamel';
+                totalPrice = 5.00 * currentOrder.quantity;
+                priceText = currentOrder.quantity > 1 ? `$${totalPrice.toFixed(2)} (${currentOrder.quantity} x $5.00)` : '$5.00';
+            } else if (currentOrder.dishType === 'marquesa-chocolate') {
+                proteinText = `${currentOrder.quantity}x Marquesa de Chocolate`;
+                sideText = 'Postre casero artesanal';
+                totalPrice = 2.00 * currentOrder.quantity;
+                priceText = currentOrder.quantity > 1 ? `$${totalPrice.toFixed(2)} (${currentOrder.quantity} x $2.00)` : '$2.00';
             } else if (currentOrder.dishType === 'hallaca') {
                 if (currentOrder.hallacaOption === 'individual') {
                     proteinText = `${currentOrder.quantity}x Hallaca${currentOrder.quantity > 1 ? 's' : ''} Venezolana${currentOrder.quantity > 1 ? 's' : ''} Individual${currentOrder.quantity > 1 ? 'es' : ''}`;
@@ -1544,7 +1581,7 @@
                     </div>
                 `;
             } else if (!isDessertMode) {
-                if (currentOrder.dishType !== 'pabellon' && currentOrder.dishType !== 'hallaca' && currentOrder.dishType !== 'pasta-corta') {
+                if (currentOrder.dishType !== 'pabellon' && currentOrder.dishType !== 'hallaca' && currentOrder.dishType !== 'pasta-corta' && currentOrder.dishType !== 'lasagna' && currentOrder.dishType !== 'marquesa-chocolate') {
                     summaryHTML += `
                         <div class="summary-item">
                             <strong>🍽️ Acompañamiento:</strong> ${sideText}
@@ -1763,6 +1800,20 @@
                     dishDescription = `
                         <p><strong>🍗</strong> ${order.quantity}x Pollo Frito con Puré y Tajadas</p>
                         <p><strong>🍽️</strong> Pollo frito dorado, puré de papa cremoso y tajadas de plátano</p>
+                        <p><strong>💰</strong> $${orderPrice.toFixed(2)}</p>
+                    `;
+                } else if (order.dishType === 'lasagna') {
+                    orderPrice = 5.00 * order.quantity;
+                    dishDescription = `
+                        <p><strong>🍝</strong> ${order.quantity}x Lasagna (Pasticho)</p>
+                        <p><strong>🍽️</strong> Capas de pasta con salsa bolognesa, queso y bechamel</p>
+                        <p><strong>💰</strong> $${orderPrice.toFixed(2)}</p>
+                    `;
+                } else if (order.dishType === 'marquesa-chocolate') {
+                    orderPrice = 2.00 * order.quantity;
+                    dishDescription = `
+                        <p><strong>🍫</strong> ${order.quantity}x Marquesa de Chocolate</p>
+                        <p><strong>🍯</strong> Postre casero artesanal</p>
                         <p><strong>💰</strong> $${orderPrice.toFixed(2)}</p>
                     `;
                 } else if (order.dishType === 'pabellon') {
@@ -2165,7 +2216,7 @@
                 currentOrder = {...orderToEdit};
                 
                 // Determinar el tipo de pedido para configurar el modo correcto
-                if (orderToEdit.dishType === 'dulce-maracuya' || orderToEdit.dishType === 'dulce-limon' || orderToEdit.dishType === 'arroz-con-leche') {
+                if (orderToEdit.dishType === 'dulce-maracuya' || orderToEdit.dishType === 'dulce-limon' || orderToEdit.dishType === 'arroz-con-leche' || orderToEdit.dishType === 'marquesa-chocolate') {
                     isDessertMode = true;
                     isSauceMode = false;
                 } else if (orderToEdit.dishType === 'bolognesa' || orderToEdit.dishType === 'napoli' || orderToEdit.dishType === 'costilla') {
@@ -2215,6 +2266,10 @@
                 orderName = `${order.quantity}x Pasta con Costilla para ${order.forWho}`;
             } else if (order.dishType === 'pollo-frito') {
                 orderName = `${order.quantity}x Pollo Frito para ${order.forWho}`;
+            } else if (order.dishType === 'lasagna') {
+                orderName = `${order.quantity}x Lasagna (Pasticho) para ${order.forWho}`;
+            } else if (order.dishType === 'marquesa-chocolate') {
+                orderName = `${order.quantity}x Marquesa de Chocolate para ${order.forWho}`;
             } else if (order.dishType === 'bolognesa' || order.dishType === 'napoli' || order.dishType === 'costilla') {
                 const sauceNames = {
                     'bolognesa': 'Salsa Bolognesa',
