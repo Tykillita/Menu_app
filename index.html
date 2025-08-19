@@ -1731,7 +1731,14 @@
         }
 
         function proceedToCheckout() {
-            allOrders.push({...currentOrder});
+            // Guardar el pedido actual solo si no está ya en allOrders
+            if (allOrders.length === 0 || !allOrders.some(order => 
+                order.dishType === currentOrder.dishType && 
+                order.forWho === currentOrder.forWho && 
+                order.quantity === currentOrder.quantity
+            )) {
+                allOrders.push({...currentOrder});
+            }
             showAllOrdersSummary();
         }
 
