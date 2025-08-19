@@ -797,6 +797,12 @@
                             💰 $2.00 cada uno
                         </div>
                     </button>
+                    <button class="option-btn" onclick="selectDessert('marquesa-chocolate')">
+                        🍫 Marquesa de Chocolate
+                        <div style="font-size: 0.9rem; color: #4ecdc4; margin-top: 8px; font-weight: bold;">
+                            💰 $2.00 cada uno
+                        </div>
+                    </button>
                 `;
             } else {
                 step1Title.textContent = 'Paso 1: Elige tu Plato Principal';
@@ -826,6 +832,15 @@
                         🍗 Pollo Frito con Puré y Tajadas
                         <div style="font-size: 0.8rem; color: #ccc; margin-top: 5px;">
                             Pollo frito dorado, puré de papa cremoso y tajadas de plátano
+                        </div>
+                        <div style="font-size: 0.9rem; color: #4ecdc4; margin-top: 8px; font-weight: bold;">
+                            💰 $5.00 cada una
+                        </div>
+                    </button>
+                    <button class="option-btn" onclick="selectDish('lasagna')" style="background: linear-gradient(45deg, rgba(139,69,19,0.1), rgba(160,82,45,0.1)); border: 1px solid rgba(139,69,19,0.3);">
+                        🍝 Lasagna (Pasticho)
+                        <div style="font-size: 0.8rem; color: #ccc; margin-top: 5px;">
+                            Capas de pasta con salsa bolognesa, queso y bechamel
                         </div>
                         <div style="font-size: 0.9rem; color: #4ecdc4; margin-top: 8px; font-weight: bold;">
                             💰 $5.00 cada una
@@ -952,6 +967,8 @@
                 currentOrder.protein = 'dulce-limon';
             } else if (dessertType === 'arroz-con-leche') {
                 currentOrder.protein = 'arroz-con-leche';
+            } else if (dessertType === 'marquesa-chocolate') {
+                currentOrder.protein = 'marquesa-chocolate';
             }            
             currentOrder.side = 'postre-casero';
             currentOrder.ensalada = false;
@@ -1023,6 +1040,8 @@
             if (currentOrder.dishType === 'dulce-maracuya') return 2.00;
             if (currentOrder.dishType === 'pasta-costilla') return 5.00;
             if (currentOrder.dishType === 'pollo-frito') return 5.00;
+            if (currentOrder.dishType === 'lasagna') return 5.00;
+            if (currentOrder.dishType === 'marquesa-chocolate') return 2.00;
             return 5.00; // milanesas
         }
 
@@ -1287,6 +1306,16 @@
             currentOrder.side = 'pollo-completo';
             currentOrder.ensalada = false; // Pollo frito no lleva ensalada
             currentOrder.tajada = true; // Ya viene incluida
+            
+            setTimeout(() => {
+                showQuantitySelector();
+            }, 300);
+        } else if (dishType === 'lasagna') {
+            // Para lasagna, ir al selector de cantidad (sin acompañamientos)
+            currentOrder.protein = 'lasagna';
+            currentOrder.side = 'lasagna-completa';
+            currentOrder.ensalada = false; // Lasagna no lleva ensalada
+            currentOrder.tajada = false; // Lasagna no lleva tajada
             
             setTimeout(() => {
                 showQuantitySelector();
@@ -1869,6 +1898,15 @@
                     } else {
                         message += `💰 ${orderPrice.toFixed(2)}\n`;
                     }
+                } else if (order.dishType === 'marquesa-chocolate') {
+                    orderPrice = 2.00 * order.quantity;
+                    message += `🍫 ${order.quantity}x Marquesa de Chocolate\n`;
+                    message += `🍯 Postre casero artesanal\n`;
+                    if (order.quantity > 1) {
+                        message += `💰 ${order.quantity} x $2.00 = ${orderPrice.toFixed(2)}\n`;
+                    } else {
+                        message += `💰 ${orderPrice.toFixed(2)}\n`;
+                    }
                 } else if (order.dishType === 'pasta-costilla') {
                     orderPrice = 5.00 * order.quantity;
                     message += `🍝 ${order.quantity}x Pasta corta con Salsa de Costilla de Cerdo\n`;
@@ -1882,6 +1920,15 @@
                     orderPrice = 5.00 * order.quantity;
                     message += `🍗 ${order.quantity}x Pollo Frito con Puré y Tajadas\n`;
                     message += `🍽️ Pollo frito dorado, puré de papa cremoso y tajadas de plátano\n`;
+                    if (order.quantity > 1) {
+                        message += `💰 ${order.quantity} x $5.00 = $${orderPrice.toFixed(2)}\n`;
+                    } else {
+                        message += `💰 $${orderPrice.toFixed(2)}\n`;
+                    }
+                } else if (order.dishType === 'lasagna') {
+                    orderPrice = 5.00 * order.quantity;
+                    message += `🍝 ${order.quantity}x Lasagna (Pasticho)\n`;
+                    message += `🍽️ Capas de pasta con salsa bolognesa, queso y bechamel\n`;
                     if (order.quantity > 1) {
                         message += `💰 ${order.quantity} x $5.00 = $${orderPrice.toFixed(2)}\n`;
                     } else {
