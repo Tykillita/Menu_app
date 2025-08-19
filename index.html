@@ -819,7 +819,7 @@
                             💰 $4.00 cada una
                         </div>
                     </button> -->
-                    <button class="option-btn" onclick="selectDish('pasta-costilla')" style="background: linear-gradient(45deg, rgba(101,67,33,0.1), rgba(139,90,43,0.1)); border: 1px solid rgba(101,67,33,0.3);">
+                <!--<button class="option-btn" onclick="selectDish('pasta-costilla')" style="background: linear-gradient(45deg, rgba(101,67,33,0.1), rgba(139,90,43,0.1)); border: 1px solid rgba(101,67,33,0.3);">
                         🍝 Pasta corta con Salsa de Costilla de Cerdo
                         <div style="font-size: 0.8rem; color: #ccc; margin-top: 5px;">
                             Pasta corta con salsa de costilla de cerdo, pan de ajo y tajada
@@ -827,7 +827,7 @@
                         <div style="font-size: 0.9rem; color: #4ecdc4; margin-top: 8px; font-weight: bold;">
                             💰 $5.00 cada una
                         </div>
-                    </button>
+                    </button>-->
                 <!--<button class="option-btn" onclick="selectDish('pollo-frito')" style="background: linear-gradient(45deg, rgba(255,140,0,0.1), rgba(255,165,0,0.1)); border: 1px solid rgba(255,140,0,0.3);">
                         🍗 Pollo Frito con Puré y Tajadas
                         <div style="font-size: 0.8rem; color: #ccc; margin-top: 5px;">
@@ -914,7 +914,7 @@
                             Pasta corta, salsa bolognesa, pan de ajo y tajada
                         </div>
                     </button>v -->
-                    <button class="option-btn" onclick="selectDish('pasta-costilla')" style="background: linear-gradient(45deg, rgba(101,67,33,0.1), rgba(139,90,43,0.1)); border: 1px solid rgba(101,67,33,0.3);">
+                <!--<button class="option-btn" onclick="selectDish('pasta-costilla')" style="background: linear-gradient(45deg, rgba(101,67,33,0.1), rgba(139,90,43,0.1)); border: 1px solid rgba(101,67,33,0.3);">
                         🍝 Pasta corta con Salsa de Costilla de Cerdo
                         <div style="font-size: 0.8rem; color: #ccc; margin-top: 5px;">
                             Pasta corta con salsa de costilla de cerdo, pan de ajo y tajada
@@ -922,7 +922,7 @@
                         <div style="font-size: 0.9rem; color: #4ecdc4; margin-top: 8px; font-weight: bold;">
                             💰 $5.00 cada una
                         </div>
-                    </button>
+                    </button>-->
                 <!--<button class="option-btn" onclick="selectDish('pollo-frito')" style="background: linear-gradient(45deg, rgba(255,140,0,0.1), rgba(255,165,0,0.1)); border: 1px solid rgba(255,140,0,0.3);">
                         🍗 Pollo Frito con Puré y Tajadas
                         <div style="font-size: 0.8rem; color: #ccc; margin-top: 5px;">
@@ -1046,7 +1046,7 @@
             if (currentOrder.dishType === 'dulce-maracuya') return 2.00;
             if (currentOrder.dishType === 'pasta-costilla') return 5.00;
             if (currentOrder.dishType === 'pollo-frito') return 5.00;
-            if (currentOrder.dishType === 'lasagna') return 5.00;
+            if (currentOrder.dishType === 'lasagna') return 6.00;
             if (currentOrder.dishType === 'marquesa-chocolate') return 2.00;
             return 5.00; // milanesas
         }
@@ -1544,8 +1544,8 @@
             } else if (currentOrder.dishType === 'lasagna') {
                 proteinText = `${currentOrder.quantity}x Lasagna (Pasticho)`;
                 sideText = 'Capas de pasta con salsa bolognesa, queso y bechamel';
-                totalPrice = 5.00 * currentOrder.quantity;
-                priceText = currentOrder.quantity > 1 ? `$${totalPrice.toFixed(2)} (${currentOrder.quantity} x $5.00)` : '$5.00';
+                totalPrice = 6.00 * currentOrder.quantity;
+                priceText = currentOrder.quantity > 1 ? `$${totalPrice.toFixed(2)} (${currentOrder.quantity} x $6.00)` : '$6.00';
             } else if (currentOrder.dishType === 'marquesa-chocolate') {
                 proteinText = `${currentOrder.quantity}x Marquesa de Chocolate`;
                 sideText = 'Postre casero artesanal';
@@ -1809,7 +1809,7 @@
                         <p><strong>💰</strong> $${orderPrice.toFixed(2)}</p>
                     `;
                 } else if (order.dishType === 'lasagna') {
-                    orderPrice = 5.00 * order.quantity;
+                    orderPrice = 6.00 * order.quantity;
                     dishDescription = `
                         <p><strong>🍝</strong> ${order.quantity}x Lasagna (Pasticho)</p>
                         <p><strong>🍽️</strong> Capas de pasta con salsa bolognesa, queso y bechamel</p>
@@ -1983,11 +1983,11 @@
                         message += `💰 $${orderPrice.toFixed(2)}\n`;
                     }
                 } else if (order.dishType === 'lasagna') {
-                    orderPrice = 5.00 * order.quantity;
+                    orderPrice = 6.00 * order.quantity;
                     message += `🍝 ${order.quantity}x Lasagna (Pasticho)\n`;
                     message += `🍽️ Capas de pasta con salsa bolognesa, queso y bechamel\n`;
                     if (order.quantity > 1) {
-                        message += `💰 ${order.quantity} x $5.00 = $${orderPrice.toFixed(2)}\n`;
+                        message += `💰 ${order.quantity} x $6.00 = $${orderPrice.toFixed(2)}\n`;
                     } else {
                         message += `💰 $${orderPrice.toFixed(2)}\n`;
                     }
